@@ -1,0 +1,233 @@
+{
+  "system_info": {
+    "system": "Windows",
+    "release": "11",
+    "version": "10.0.26100",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "python_version": "3.12.10",
+    "python_implementation": "CPython",
+    "architecture": "64bit"
+  },
+  "total_tests": 28,
+  "passed_tests": 26,
+  "failed_tests": 2,
+  "success_rate": 92.85714285714286,
+  "results": [
+    {
+      "test": "System detection",
+      "passed": true,
+      "info": {
+        "system": "Windows",
+        "release": "11",
+        "version": "10.0.26100",
+        "machine": "AMD64",
+        "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+        "python_version": "3.12.10",
+        "python_implementation": "CPython",
+        "architecture": "64bit"
+      }
+    },
+    {
+      "test": "Path handling: server/app/main.py",
+      "passed": true,
+      "details": {
+        "resolved": "C:\\Users\\BoiriGourav-LFI\\Desktop\\codes\\augment-code\\server\\app\\main.py",
+        "parent": "server\\app",
+        "name": "main.py",
+        "suffix": ".py"
+      }
+    },
+    {
+      "test": "Path handling: extension/src/extension.ts",
+      "passed": true,
+      "details": {
+        "resolved": "C:\\Users\\BoiriGourav-LFI\\Desktop\\codes\\augment-code\\extension\\src\\extension.ts",
+        "parent": "extension\\src",
+        "name": "extension.ts",
+        "suffix": ".ts"
+      }
+    },
+    {
+      "test": "Path handling: docs/README.md",
+      "passed": true,
+      "details": {
+        "resolved": "C:\\Users\\BoiriGourav-LFI\\Desktop\\codes\\augment-code\\docs\\README.md",
+        "parent": "docs",
+        "name": "README.md",
+        "suffix": ".md"
+      }
+    },
+    {
+      "test": "Path handling: tests/test_config.json",
+      "passed": true,
+      "details": {
+        "resolved": "C:\\Users\\BoiriGourav-LFI\\Desktop\\codes\\augment-code\\tests\\test_config.json",
+        "parent": "tests",
+        "name": "test_config.json",
+        "suffix": ".json"
+      }
+    },
+    {
+      "test": "Command execution: List directory contents",
+      "passed": true,
+      "command": "dir",
+      "return_code": 0,
+      "output_length": 1380
+    },
+    {
+      "test": "Command execution: Echo command",
+      "passed": true,
+      "command": "echo Hello",
+      "return_code": 0,
+      "output_length": 6
+    },
+    {
+      "test": "Command execution: Find Python executable",
+      "passed": true,
+      "command": "where python",
+      "return_code": 0,
+      "output_length": 152
+    },
+    {
+      "test": "Command execution: PowerShell command",
+      "passed": true,
+      "command": "powershell -Command Get-Process",
+      "return_code": 0,
+      "output_length": 34885
+    },
+    {
+      "test": "File creation",
+      "passed": true,
+      "path": "C:\\Users\\BOIRIG~1\\AppData\\Local\\Temp\\tmpyl2qjqzf\\test_file.txt"
+    },
+    {
+      "test": "Directory creation",
+      "passed": true,
+      "path": "C:\\Users\\BOIRIG~1\\AppData\\Local\\Temp\\tmpyl2qjqzf\\test_directory"
+    },
+    {
+      "test": "Environment variable: PATH",
+      "passed": true,
+      "variable": "PATH",
+      "has_value": true,
+      "value_length": 1448
+    },
+    {
+      "test": "Environment variable: HOME",
+      "passed": false,
+      "variable": "HOME",
+      "has_value": false,
+      "value_length": 0
+    },
+    {
+      "test": "Environment variable: USER",
+      "passed": false,
+      "variable": "USER",
+      "has_value": false,
+      "value_length": 0
+    },
+    {
+      "test": "Environment variable: USERPROFILE",
+      "passed": true,
+      "variable": "USERPROFILE",
+      "has_value": true,
+      "value_length": 24
+    },
+    {
+      "test": "Environment variable: APPDATA",
+      "passed": true,
+      "variable": "APPDATA",
+      "has_value": true,
+      "value_length": 40
+    },
+    {
+      "test": "Environment variable: LOCALAPPDATA",
+      "passed": true,
+      "variable": "LOCALAPPDATA",
+      "has_value": true,
+      "value_length": 38
+    },
+    {
+      "test": "Custom environment variable",
+      "passed": true,
+      "variable": "AI_CODING_ASSISTANT_TEST",
+      "expected": "test_value_123",
+      "actual": "test_value_123"
+    },
+    {
+      "test": "Network connectivity: google.com:80",
+      "passed": true,
+      "host": "google.com",
+      "port": 80,
+      "ip": "142.250.192.110",
+      "connection_result": 0
+    },
+    {
+      "test": "Network connectivity: github.com:443",
+      "passed": true,
+      "host": "github.com",
+      "port": 443,
+      "ip": "20.207.73.82",
+      "connection_result": 0
+    },
+    {
+      "test": "Network connectivity: api.openai.com:443",
+      "passed": true,
+      "host": "api.openai.com",
+      "port": 443,
+      "ip": "162.159.140.245",
+      "connection_result": 0
+    },
+    {
+      "test": "Network connectivity: localhost:8000",
+      "passed": true,
+      "host": "localhost",
+      "port": 8000,
+      "ip": "127.0.0.1",
+      "connection_result": 0
+    },
+    {
+      "test": "Unicode handling: Hello, World!...",
+      "passed": true,
+      "original_length": 13,
+      "encoded_length": 13,
+      "file_io_success": true
+    },
+    {
+      "test": "Unicode handling: H\u00e9llo, W\u00f6rld!...",
+      "passed": true,
+      "original_length": 13,
+      "encoded_length": 15,
+      "file_io_success": true
+    },
+    {
+      "test": "Unicode handling: \u3053\u3093\u306b\u3061\u306f\u4e16\u754c...",
+      "passed": true,
+      "original_length": 7,
+      "encoded_length": 21,
+      "file_io_success": true
+    },
+    {
+      "test": "Unicode handling: \ud83e\udd16 AI Coding Assistan...",
+      "passed": true,
+      "original_length": 23,
+      "encoded_length": 29,
+      "file_io_success": true
+    },
+    {
+      "test": "Unicode handling: \u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac...",
+      "passed": true,
+      "original_length": 8,
+      "encoded_length": 16,
+      "file_io_success": true
+    },
+    {
+      "test": "Unicode handling: \u0627\u0644\u0639\u0631\u0628\u064a\u0629...",
+      "passed": true,
+      "original_length": 7,
+      "encoded_length": 14,
+      "file_io_success": true
+    }
+  ]
+}

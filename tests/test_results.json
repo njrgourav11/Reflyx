@@ -1,0 +1,170 @@
+{
+  "total_tests": 26,
+  "passed_tests": 22,
+  "failed_tests": 4,
+  "success_rate": 84.61538461538461,
+  "results": [
+    {
+      "name": "Backend Health",
+      "passed": true,
+      "message": "Health endpoint responding",
+      "duration": 7.375431537628174
+    },
+    {
+      "name": "API GET /api/v1/health",
+      "passed": true,
+      "message": "HTTP 200",
+      "duration": 7.085125684738159
+    },
+    {
+      "name": "API GET /api/v1/stats",
+      "passed": true,
+      "message": "HTTP 200",
+      "duration": 0.003779172897338867
+    },
+    {
+      "name": "API POST /api/v1/query",
+      "passed": true,
+      "message": "HTTP 200",
+      "duration": 0.26366090774536133
+    },
+    {
+      "name": "API POST /api/v1/explain",
+      "passed": false,
+      "message": "HTTP 404",
+      "duration": 0.004018306732177734
+    },
+    {
+      "name": "API POST /api/v1/generate",
+      "passed": false,
+      "message": "HTTP 404",
+      "duration": 0.2599525451660156
+    },
+    {
+      "name": "Docker Status",
+      "passed": false,
+      "message": "Docker not running",
+      "duration": 0.0
+    },
+    {
+      "name": "Python Version",
+      "passed": true,
+      "message": "Python 3.12",
+      "duration": 0.0
+    },
+    {
+      "name": "Virtual Environment",
+      "passed": true,
+      "message": "venv exists",
+      "duration": 0.0
+    },
+    {
+      "name": "Import fastapi",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import uvicorn",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import pydantic",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import httpx",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import qdrant_client",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import redis",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Import dotenv",
+      "passed": true,
+      "message": "Import successful",
+      "duration": 0.0
+    },
+    {
+      "name": "Extension package.json",
+      "passed": true,
+      "message": "File exists",
+      "duration": 0.0
+    },
+    {
+      "name": "Extension Compilation",
+      "passed": true,
+      "message": "Compiled output exists",
+      "duration": 0.0
+    },
+    {
+      "name": "Extension Dependencies",
+      "passed": true,
+      "message": "node_modules exists",
+      "duration": 0.0
+    },
+    {
+      "name": "Ollama Installation",
+      "passed": true,
+      "message": "Ollama available",
+      "duration": 0.0
+    },
+    {
+      "name": "Ollama Service",
+      "passed": true,
+      "message": "Service responding",
+      "duration": 0.0
+    },
+    {
+      "name": "Ollama Models",
+      "passed": false,
+      "message": "No models found",
+      "duration": 0.0
+    },
+    {
+      "name": "System Detection",
+      "passed": true,
+      "message": "Detected Windows",
+      "duration": 0.0
+    },
+    {
+      "name": "Path server",
+      "passed": true,
+      "message": "Path accessible",
+      "duration": 0.0
+    },
+    {
+      "name": "Path extension",
+      "passed": true,
+      "message": "Path accessible",
+      "duration": 0.0
+    },
+    {
+      "name": "Path docs",
+      "passed": true,
+      "message": "Path accessible",
+      "duration": 0.0
+    }
+  ],
+  "system_info": {
+    "platform": "Windows",
+    "release": "11",
+    "machine": "AMD64",
+    "python_version": "3.12.10"
+  }
+}

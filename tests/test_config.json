@@ -1,0 +1,142 @@
+{
+  "backend_url": "http://localhost:8000",
+  "qdrant_url": "http://localhost:6333",
+  "redis_url": "redis://localhost:6379",
+  "timeout": 30,
+  "test_modes": ["local", "online", "hybrid"],
+  "test_providers": ["ollama", "openai", "anthropic", "google", "groq"],
+  "skip_slow_tests": false,
+  "test_data": {
+    "sample_code": {
+      "python": "def hello_world():\n    print('Hello, World!')\n    return 'success'",
+      "javascript": "function helloWorld() {\n    console.log('Hello, World!');\n    return 'success';\n}",
+      "typescript": "function helloWorld(): string {\n    console.log('Hello, World!');\n    return 'success';\n}",
+      "java": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}",
+      "cpp": "#include <iostream>\nint main() {\n    std::cout << \"Hello, World!\" << std::endl;\n    return 0;\n}"
+    },
+    "test_queries": [
+      "How do I create a REST API endpoint?",
+      "Explain this function",
+      "Find all database connection functions",
+      "Show me error handling patterns",
+      "Generate a login function"
+    ],
+    "test_prompts": [
+      "Create a function that validates email addresses",
+      "Write a REST API endpoint for user authentication",
+      "Generate a database connection class",
+      "Create error handling middleware",
+      "Write unit tests for a calculator function"
+    ]
+  },
+  "performance_thresholds": {
+    "api_response_time": 5.0,
+    "query_processing_time": 10.0,
+    "code_generation_time": 15.0,
+    "indexing_time_per_file": 2.0,
+    "memory_usage_mb": 512,
+    "cpu_usage_percent": 80
+  },
+  "compatibility_matrix": {
+    "operating_systems": ["windows", "macos", "linux"],
+    "python_versions": ["3.8", "3.9", "3.10", "3.11", "3.12"],
+    "node_versions": ["16", "18", "20"],
+    "vscode_versions": ["1.80.0", "1.85.0", "1.90.0"]
+  },
+  "test_environments": {
+    "local": {
+      "description": "Local development environment",
+      "requirements": ["ollama", "docker", "python", "node"],
+      "ai_providers": ["ollama"]
+    },
+    "online": {
+      "description": "Online-only environment",
+      "requirements": ["api_keys", "internet"],
+      "ai_providers": ["openai", "anthropic", "google", "groq"]
+    },
+    "hybrid": {
+      "description": "Hybrid environment with local and online",
+      "requirements": ["ollama", "api_keys", "internet"],
+      "ai_providers": ["ollama", "openai", "anthropic", "google", "groq"]
+    },
+    "ci": {
+      "description": "Continuous integration environment",
+      "requirements": ["docker", "python", "node"],
+      "ai_providers": [],
+      "skip_ai_tests": true
+    }
+  },
+  "error_scenarios": [
+    {
+      "name": "Network Timeout",
+      "description": "Test behavior when API calls timeout",
+      "simulation": "timeout_requests"
+    },
+    {
+      "name": "Invalid API Key",
+      "description": "Test behavior with invalid API keys",
+      "simulation": "invalid_credentials"
+    },
+    {
+      "name": "Service Unavailable",
+      "description": "Test behavior when services are down",
+      "simulation": "service_down"
+    },
+    {
+      "name": "Rate Limiting",
+      "description": "Test behavior when rate limited",
+      "simulation": "rate_limit_exceeded"
+    },
+    {
+      "name": "Large File Processing",
+      "description": "Test behavior with very large files",
+      "simulation": "large_file_input"
+    }
+  ],
+  "security_tests": [
+    {
+      "name": "API Key Exposure",
+      "description": "Ensure API keys are not logged or exposed",
+      "check": "no_api_keys_in_logs"
+    },
+    {
+      "name": "Input Sanitization",
+      "description": "Test input sanitization for code injection",
+      "check": "sanitize_user_input"
+    },
+    {
+      "name": "CORS Configuration",
+      "description": "Verify CORS is properly configured",
+      "check": "cors_headers"
+    },
+    {
+      "name": "Rate Limiting",
+      "description": "Verify rate limiting is enforced",
+      "check": "rate_limit_enforcement"
+    }
+  ],
+  "documentation_checks": [
+    {
+      "file": "README.md",
+      "required_sections": ["Installation", "Usage", "Configuration", "Troubleshooting"],
+      "check_links": true,
+      "check_images": true
+    },
+    {
+      "file": "docs/INSTALLATION_GUIDE.md",
+      "required_sections": ["Prerequisites", "Step-by-step", "Verification"],
+      "check_links": true,
+      "check_images": true
+    },
+    {
+      "file": "docs/API_KEYS_GUIDE.md",
+      "required_sections": ["OpenAI", "Anthropic", "Google", "Groq"],
+      "check_links": true
+    },
+    {
+      "file": "CHANGELOG.md",
+      "check_version_format": true,
+      "check_date_format": true
+    }
+  ]
+}

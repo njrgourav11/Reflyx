@@ -1,0 +1,92 @@
+# VS Code Extension Ignore File
+# Files and folders to exclude from the extension package
+
+# Source files (TypeScript)
+src/**
+tsconfig.json
+.eslintrc.json
+
+# Development files
+.vscode/**
+.vscode-test/**
+vsc-extension-quickstart.md
+
+# Node.js
+node_modules/**
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+*.vsix
+.nyc_output/**
+coverage/**
+
+# Git
+.git/**
+.gitignore
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test files
+test/**
+tests/**
+**/*.test.js
+**/*.spec.js
+
+# Documentation (keep only essential)
+docs/**
+*.md
+!README.md
+
+# Development dependencies
+webpack.config.js
+rollup.config.js
+
+# Temporary files
+tmp/**
+temp/**
+
+# IDE files
+.idea/**
+*.swp
+*.swo
+
+# Backup files
+*.bak
+*.backup
+
+# Environment files
+.env
+.env.*
+
+# TypeScript declaration files (not needed in production)
+**/*.d.ts
+!node_modules/@types/**/*.d.ts
+
+# Source maps (optional - remove if you don't want them in production)
+**/*.map
+
+# Development scripts
+scripts/**
+
+# Package lock files (keep package.json only)
+package-lock.json
+yarn.lock
+
+# Webpack/bundler outputs that aren't needed
+dist/**
+build/**
+
+# Editor directories and files
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

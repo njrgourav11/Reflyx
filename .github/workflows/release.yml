@@ -1,0 +1,143 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extension/package-lock.json
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install extension dependencies
+      run: |
+        cd extension
+        npm ci
+    
+    - name: Install backend dependencies
+      run: |
+        cd server
+        pip install -r requirements.txt
+    
+    - name: Compile extension
+      run: |
+        cd extension
+        npm run compile
+    
+    - name: Package extension
+      run: |
+        cd extension
+        npm install -g vsce
+        vsce package
+    
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.get_version.outputs.VERSION }}
+        release_name: AI Coding Assistant ${{ steps.get_version.outputs.VERSION }}
+        body: |
+          ## What's New in ${{ steps.get_version.outputs.VERSION }}
+          
+          ### ✨ Features
+          - Enhanced AI processing with dual-mode operation
+          - Support for 6 AI providers (Ollama, OpenAI, Anthropic, Google AI, Groq, Together AI)
+          - Secure API key management with VS Code SecretStorage
+          - Context-aware chat with workspace integration
+          - Inline code completions with intelligent caching
+          - Cross-platform compatibility (Windows, macOS, Linux)
+          
+          ### 🔧 Improvements
+          - Optimized performance and response times
+          - Enhanced error handling and recovery
+          - Improved user interface and experience
+          - Better documentation and guides
+          
+          ### 🐛 Bug Fixes
+          - Fixed compilation issues
+          - Resolved extension loading problems
+          - Improved stability and reliability
+          
+          ### 📚 Documentation
+          - Complete installation guides
+          - API keys setup instructions
+          - Troubleshooting documentation
+          - Performance comparison with competitors
+          
+          ## 🚀 Installation
+          
+          1. Download the `ai-coding-assistant.vsix` file below
+          2. Open VS Code
+          3. Press `Ctrl+Shift+P` and type "Extensions: Install from VSIX..."
+          4. Select the downloaded file
+          5. Follow the setup guide in the README
+          
+          ## 🔗 Links
+          
+          - [📖 Documentation](https://github.com/${{ github.repository }}/tree/main/docs)
+          - [🐛 Report Issues](https://github.com/${{ github.repository }}/issues)
+          - [💬 Discussions](https://github.com/${{ github.repository }}/discussions)
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/v1.0.0...${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: false
+    
+    - name: Upload Extension Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./extension/ai-coding-assistant-1.0.0.vsix
+        asset_name: ai-coding-assistant.vsix
+        asset_content_type: application/zip
+    
+    - name: Build Docker Image
+      run: |
+        docker build -t ghcr.io/${{ github.repository_owner }}/ai-coding-assistant:${{ steps.get_version.outputs.VERSION }} .
+        docker build -t ghcr.io/${{ github.repository_owner }}/ai-coding-assistant:latest .
+    
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Push Docker Images
+      run: |
+        docker push ghcr.io/${{ github.repository_owner }}/ai-coding-assistant:${{ steps.get_version.outputs.VERSION }}
+        docker push ghcr.io/${{ github.repository_owner }}/ai-coding-assistant:latest
+    
+    - name: Publish to VS Code Marketplace
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      run: |
+        cd extension
+        vsce publish --pat $VSCE_PAT

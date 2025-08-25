@@ -1,0 +1,342 @@
+{
+  "name": "ai-coding-assistant",
+  "displayName": "AI Coding Assistant",
+  "description": "Local AI-powered coding assistant with semantic search and code generation",
+  "version": "1.0.0",
+  "publisher": "ai-coding-assistant",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Snippets",
+    "Education"
+  ],
+  "keywords": [
+    "ai",
+    "assistant",
+    "code",
+    "search",
+    "generation",
+    "local",
+    "offline"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiCodingAssistant.askCodebase",
+        "title": "Ask Codebase",
+        "category": "AI Coding Assistant",
+        "icon": "$(search)"
+      },
+      {
+        "command": "aiCodingAssistant.explainSelection",
+        "title": "Explain Selection",
+        "category": "AI Coding Assistant",
+        "icon": "$(info)"
+      },
+      {
+        "command": "aiCodingAssistant.generateCode",
+        "title": "Generate Code",
+        "category": "AI Coding Assistant",
+        "icon": "$(add)"
+      },
+      {
+        "command": "aiCodingAssistant.findSimilar",
+        "title": "Find Similar Code",
+        "category": "AI Coding Assistant",
+        "icon": "$(references)"
+      },
+      {
+        "command": "aiCodingAssistant.refactorSuggestion",
+        "title": "Refactor Suggestion",
+        "category": "AI Coding Assistant",
+        "icon": "$(lightbulb)"
+      },
+      {
+        "command": "aiCodingAssistant.indexWorkspace",
+        "title": "Index Workspace",
+        "category": "AI Coding Assistant",
+        "icon": "$(database)"
+      },
+      {
+        "command": "aiCodingAssistant.toggleChat",
+        "title": "Toggle Chat Panel",
+        "category": "AI Coding Assistant",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "aiCodingAssistant.openSettings",
+        "title": "Open Settings",
+        "category": "AI Coding Assistant",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "aiCodingAssistant.switchMode",
+        "title": "Switch AI Mode",
+        "category": "AI Coding Assistant",
+        "icon": "$(arrow-swap)"
+      },
+      {
+        "command": "aiCodingAssistant.selectProvider",
+        "title": "Select AI Provider",
+        "category": "AI Coding Assistant",
+        "icon": "$(server-environment)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aiCodingAssistant.explainSelection",
+          "when": "editorHasSelection",
+          "group": "aiAssistant@1"
+        },
+        {
+          "command": "aiCodingAssistant.findSimilar",
+          "when": "editorHasSelection",
+          "group": "aiAssistant@2"
+        },
+        {
+          "command": "aiCodingAssistant.refactorSuggestion",
+          "when": "editorHasSelection",
+          "group": "aiAssistant@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "aiCodingAssistant.explainSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "aiCodingAssistant.findSimilar",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "aiCodingAssistant.refactorSuggestion",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "aiCodingAssistant.chatView",
+          "name": "AI Assistant",
+          "when": "aiCodingAssistant.enabled"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "aiCodingAssistant.chatView",
+        "contents": "Welcome to AI Coding Assistant!\n\n[Index Workspace](command:aiCodingAssistant.indexWorkspace)\n\nStart by indexing your workspace to enable semantic search and AI assistance."
+      }
+    ],
+    "configuration": {
+      "title": "AI Coding Assistant",
+      "properties": {
+        "aiCodingAssistant.serverUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "URL of the AI Coding Assistant backend server"
+        },
+        "aiCodingAssistant.aiMode": {
+          "type": "string",
+          "enum": [
+            "local",
+            "online",
+            "hybrid"
+          ],
+          "default": "local",
+          "description": "AI processing mode: local (private), online (cloud APIs), or hybrid (local with cloud fallback)"
+        },
+        "aiCodingAssistant.preferredProvider": {
+          "type": "string",
+          "enum": [
+            "ollama",
+            "openai",
+            "anthropic",
+            "google",
+            "groq",
+            "together"
+          ],
+          "default": "ollama",
+          "description": "Preferred AI provider"
+        },
+        "aiCodingAssistant.fallbackProvider": {
+          "type": "string",
+          "enum": [
+            "",
+            "ollama",
+            "openai",
+            "anthropic",
+            "google",
+            "groq",
+            "together"
+          ],
+          "default": "",
+          "description": "Fallback AI provider (optional)"
+        },
+        "aiCodingAssistant.selectedModel": {
+          "type": "string",
+          "default": "",
+          "description": "Specific model to use (leave empty for auto-selection)"
+        },
+        "aiCodingAssistant.embeddingModel": {
+          "type": "string",
+          "default": "all-MiniLM-L6-v2",
+          "description": "Embedding model for semantic search"
+        },
+        "aiCodingAssistant.maxChunkSize": {
+          "type": "number",
+          "default": 500,
+          "minimum": 100,
+          "maximum": 2000,
+          "description": "Maximum size of code chunks for indexing"
+        },
+        "aiCodingAssistant.retrievalCount": {
+          "type": "number",
+          "default": 10,
+          "minimum": 3,
+          "maximum": 20,
+          "description": "Number of code chunks to retrieve for context"
+        },
+        "aiCodingAssistant.similarityThreshold": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum similarity threshold for search results"
+        },
+        "aiCodingAssistant.ignorePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "node_modules/**",
+            ".git/**",
+            "*.min.js",
+            "dist/**",
+            "build/**",
+            "venv/**",
+            "__pycache__/**",
+            "*.pyc",
+            ".pytest_cache/**",
+            "coverage/**",
+            ".coverage",
+            "*.log",
+            "logs/**"
+          ],
+          "description": "File patterns to ignore during indexing"
+        },
+        "aiCodingAssistant.autoIndex": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically index files when they change"
+        },
+        "aiCodingAssistant.showInlineExplanations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inline code explanations on hover"
+        },
+        "aiCodingAssistant.enableCodeLens": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable CodeLens for AI actions"
+        },
+        "aiCodingAssistant.logLevel": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warn",
+            "info",
+            "debug"
+          ],
+          "default": "info",
+          "description": "Logging level for the extension"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "aiCodingAssistant.askCodebase",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
+      },
+      {
+        "command": "aiCodingAssistant.explainSelection",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e",
+        "when": "editorHasSelection"
+      },
+      {
+        "command": "aiCodingAssistant.generateCode",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g"
+      },
+      {
+        "command": "aiCodingAssistant.toggleChat",
+        "key": "ctrl+shift+c",
+        "mac": "cmd+shift+c"
+      },
+      {
+        "command": "aiCodingAssistant.openSettings",
+        "key": "ctrl+shift+,",
+        "mac": "cmd+shift+,"
+      },
+      {
+        "command": "aiCodingAssistant.switchMode",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "deploy": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "16.x",
+    "@types/node-fetch": "^2.6.13",
+    "@types/vscode": "^1.74.0",
+    "@types/ws": "^8.18.1",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.15.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "highlight.js": "^11.9.0",
+    "marked": "^9.1.0",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.14.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/ai-coding-assistant.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/ai-coding-assistant/issues"
+  },
+  "homepage": "https://github.com/your-username/ai-coding-assistant#readme",
+  "license": "MIT"
+}
