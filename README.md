@@ -480,3 +480,9 @@ python setup.py --hybrid
 **🤖 Built with ❤️ to democratize AI-powered coding assistance**
 
 *"Making advanced AI coding tools accessible to every developer, everywhere, for free."*
+
+### Support Me
+<!-- Button version -->
+<a href="https://www.buymeacoffee.com/njrgourav11" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="45" width="180">
+</a>
