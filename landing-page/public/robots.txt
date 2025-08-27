@@ -1,31 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://reflyx.dev/sitemap.xml
+# Host
+Host: https://reflyx-ai.vercel.app/
 
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
-
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
-# Disallow: /private/
-
-# Allow all major search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
-
-User-agent: YandexBot
-Allow: /
+# Sitemaps
+Sitemap: https://reflyx-ai.vercel.app/sitemap.xml
