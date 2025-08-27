@@ -1,6 +1,17 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://reflyx-ai.vercel.app/',  // <-- Replace with your domain
-  generateRobotsTxt: true,        // Generate robots.txt as well
-  sitemapSize: 7000,              // (optional) max URLs per sitemap
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://reflyx-ai.vercel.app',
+  generateRobotsTxt: true,
+  sitemapSize: 7000,
+  changefreq: 'daily',
+  priority: 0.7,
+  exclude: ['/api/*'],
+  robotsTxtOptions: {
+    policies: [
+      {
+        userAgent: '*',
+        allow: '/',
+      },
+    ],
+  },
 };
