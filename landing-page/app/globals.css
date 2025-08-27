@@ -119,6 +119,30 @@ html, body {
   left: 100%;
 }
 
+/* Widen common containers on large screens */
+@media (min-width: 1536px) { /* 2xl */
+  /* Bump default 7xl (1280px) to 1600px on very large screens */
+  .max-w-7xl { max-width: min(1600px, 92vw); }
+  /* FAQs and other constrained areas also get more room */
+  .max-w-5xl { max-width: min(1280px, 92vw); }
+}
+
+@media (min-width: 1920px) { /* 3xl-ish */
+  .max-w-7xl { max-width: min(1800px, 92vw); }
+  .max-w-5xl { max-width: min(1400px, 92vw); }
+}
+
+@media (min-width: 2560px) { /* 4k */
+  .max-w-7xl { max-width: min(2200px, 92vw); }
+  .max-w-5xl { max-width: min(1600px, 92vw); }
+}
+
+/* Slightly increase horizontal padding on ultra-wide screens */
+@media (min-width: 1920px) {
+  .px-4 { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .lg\:px-8 { padding-left: 2.5rem; padding-right: 2.5rem; }
+}
+
 /* Scroll animations */
 @media (prefers-reduced-motion: no-preference) {
   .animate-on-scroll {

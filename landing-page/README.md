@@ -132,7 +132,7 @@ The project can be deployed to any platform that supports Next.js:
 ### Environment Variables
 Create a `.env.local` file for environment-specific variables:
 ```env
-NEXT_PUBLIC_SITE_URL=https://reflyx.dev
+NEXT_PUBLIC_SITE_URL=https://reflyx-ai.vercel.app
 NEXT_PUBLIC_GA_ID=your-google-analytics-id
 ```
 

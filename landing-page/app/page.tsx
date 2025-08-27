@@ -27,10 +27,10 @@ export default function HomePage() {
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-brand-400/5 to-purple-400/5 rounded-full blur-3xl" />
           </div>
 
-          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 sm:py-28 grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }} 
-              animate={{ opacity: 1, y: 0 }} 
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 sm:py-18 grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
               {/* Badge */}
@@ -46,10 +46,10 @@ export default function HomePage() {
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-gradient-to-r from-slate-900 via-brand-800 to-purple-800 dark:from-slate-100 dark:via-brand-200 dark:to-purple-200 bg-clip-text text-transparent">
                 Supercharge VS Code with a{' '}
-                <span className="relative">
-                  Privacy‑First
+                <span className="relative inline-block text-slate-900 dark:text-indigo-300">
+                  <span className="relative z-10">Privacy-First</span>
                   <motion.div
-                    className="absolute -bottom-2 left-0 right-0 h-3 bg-gradient-to-r from-brand-400/30 to-purple-400/30 rounded-full"
+                    className="absolute -bottom-1 left-0 right-0 h-3 bg-gradient-to-r from-brand-400/30 to-purple-400/30 rounded-full z-[-1]"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: 0.8, delay: 0.5 }}
@@ -57,13 +57,14 @@ export default function HomePage() {
                 </span>{' '}
                 AI Coding Assistant
               </h1>
-              
+
+
               <p className="mt-6 text-xl text-slate-600 dark:text-slate-300 max-w-prose leading-relaxed">
                 Reflyx runs local AI models for private coding assistance, with optional cloud providers. Enjoy semantic code search, real‑time explanations, and intelligent code generation—right inside your editor.
               </p>
 
               {/* Feature highlights */}
-              <motion.div 
+              <motion.div
                 className="mt-8 grid grid-cols-2 gap-4 text-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -82,14 +83,14 @@ export default function HomePage() {
                 ))}
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 className="mt-10 flex flex-wrap gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.6 }}
               >
-                <Link 
-                  href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx" 
+                <Link
+                  href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx"
                   className="btn btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <span>Install from Marketplace</span>
@@ -102,8 +103,8 @@ export default function HomePage() {
                 </a>
                 <CopyInstall />
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="mt-8 flex items-center gap-6 text-sm text-slate-500 dark:text-slate-400"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -124,16 +125,16 @@ export default function HomePage() {
               </motion.div>
             </motion.div>
 
-            <motion.div 
-              className="relative" 
-              initial={{ opacity: 0, y: 30, scale: 0.95 }} 
-              animate={{ opacity: 1, y: 0, scale: 1 }} 
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             >
               {/* Enhanced decorative elements */}
               <div aria-hidden className="pointer-events-none absolute -top-32 -right-32 h-64 w-64 rounded-full bg-gradient-to-r from-brand-500/20 to-purple-500/20 blur-3xl animate-pulse" />
               <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-gradient-to-r from-purple-500/15 to-pink-500/15 blur-2xl" />
-              
+
               {/* Video container with enhanced styling */}
               <div className="relative rounded-2xl ring-1 ring-slate-200/50 dark:ring-slate-800/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-3 shadow-2xl">
                 <div className="relative overflow-hidden rounded-xl">
@@ -146,17 +147,17 @@ export default function HomePage() {
                     poster="/images/image.png"
                     className="w-full h-auto aspect-video object-cover"
                   />
-                  
+
                   {/* Play button overlay for accessibility */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200 bg-black/20 rounded-xl">
                     <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
                       <svg className="w-6 h-6 text-slate-800 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
+                        <path d="M8 5v14l11-7z" />
                       </svg>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Floating stats */}
                 <motion.div
                   className="absolute -bottom-4 -left-4 bg-white dark:bg-slate-800 rounded-lg shadow-lg p-3 border border-slate-200 dark:border-slate-700"
@@ -187,7 +188,7 @@ export default function HomePage() {
                   </div>
                 </motion.div>
               </div>
-              
+
               <p className="sr-only">Interactive demo of the Reflyx VS Code extension showing AI-powered code assistance</p>
             </motion.div>
           </div>
@@ -198,7 +199,7 @@ export default function HomePage() {
         {/* Features */}
         <section id="features" className="py-24 bg-slate-50/50 dark:bg-slate-800/20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <motion.div 
+            <motion.div
               className="text-center mb-16"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -225,16 +226,16 @@ export default function HomePage() {
                 >
                   {/* Gradient background on hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-50/50 to-purple-50/50 dark:from-brand-900/10 dark:to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  
+
                   <div className="relative">
                     <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl mb-6 group-hover:scale-110 transition-transform duration-300">
                       <div className="feature-icon text-brand-600 dark:text-brand-400" aria-hidden dangerouslySetInnerHTML={{ __html: f.icon }} />
                     </div>
-                    
+
                     <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors duration-300">
                       {f.title}
                     </h3>
-                    
+
                     <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                       {f.desc}
                     </p>
@@ -254,15 +255,15 @@ export default function HomePage() {
             </div>
 
             {/* Call to action */}
-            <motion.div 
+            <motion.div
               className="text-center mt-16"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Link 
-                href="/features" 
+              <Link
+                href="/features"
                 className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 font-semibold hover:text-brand-700 dark:hover:text-brand-300 transition-colors duration-200"
               >
                 View detailed feature comparison
@@ -277,7 +278,7 @@ export default function HomePage() {
         {/* How to Get Started */}
         <section id="how" className="py-24 bg-white dark:bg-slate-900">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <motion.div 
+            <motion.div
               className="text-center mb-16"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -293,11 +294,11 @@ export default function HomePage() {
             <div className="relative">
               {/* Connection line */}
               <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-200 via-brand-400 to-brand-200 dark:from-brand-800 dark:via-brand-600 dark:to-brand-800 transform -translate-y-1/2" />
-              
+
               <ol className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 relative">
                 {steps.map((s, i) => (
-                  <motion.li 
-                    key={i} 
+                  <motion.li
+                    key={i}
                     className="relative"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -309,26 +310,26 @@ export default function HomePage() {
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-r from-brand-500 to-purple-500 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg">
                         {i + 1}
                       </div>
-                      
+
                       {/* Step icon */}
                       <div className="flex justify-center mb-6 mt-4">
                         <div className="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-2xl flex items-center justify-center">
                           <StepIcon step={i + 1} className="w-8 h-8 text-brand-600 dark:text-brand-400" />
                         </div>
                       </div>
-                      
+
                       <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3 text-center">
                         {s.title}
                       </h3>
-                      
+
                       <p className="text-slate-600 dark:text-slate-300 text-center leading-relaxed mb-4">
                         {s.text}
                       </p>
-                      
+
                       {s.href && (
                         <div className="text-center">
-                          <a 
-                            className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 font-medium hover:text-brand-700 dark:hover:text-brand-300 transition-colors duration-200" 
+                          <a
+                            className="inline-flex items-center gap-2 text-brand-600 dark:text-brand-400 font-medium hover:text-brand-700 dark:hover:text-brand-300 transition-colors duration-200"
                             href={s.href}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -347,7 +348,7 @@ export default function HomePage() {
             </div>
 
             {/* Quick start CTA */}
-            <motion.div 
+            <motion.div
               className="text-center mt-16"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -360,7 +361,7 @@ export default function HomePage() {
                   <div className="font-semibold text-slate-900 dark:text-slate-100">Ready to get started?</div>
                   <div className="text-sm text-slate-600 dark:text-slate-400">Install Reflyx and boost your productivity today</div>
                 </div>
-                <Link 
+                <Link
                   href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx"
                   className="btn btn-primary whitespace-nowrap"
                 >
@@ -374,7 +375,7 @@ export default function HomePage() {
         {/* Testimonials */}
         <section className="py-24 bg-slate-50/50 dark:bg-slate-800/20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <motion.div 
+            <motion.div
               className="text-center mb-16"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -404,11 +405,11 @@ export default function HomePage() {
                       </svg>
                     ))}
                   </div>
-                  
+
                   <blockquote className="text-slate-700 dark:text-slate-300 mb-6 leading-relaxed">
                     "{testimonial.quote}"
                   </blockquote>
-                  
+
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-r from-brand-400 to-purple-400 rounded-full flex items-center justify-center text-white font-semibold">
                       {testimonial.author.charAt(0)}
@@ -482,19 +483,19 @@ function CopyInstall() {
 
 function CopySnippet({ value, label }: { value: string; label?: string }) {
   const copy = async () => {
-    try { 
-      await navigator.clipboard.writeText(value); 
+    try {
+      await navigator.clipboard.writeText(value);
       // You could use a toast notification here instead of alert
-      alert('Copied to clipboard!'); 
-    } catch { 
-      alert('Failed to copy. Please copy manually.'); 
+      alert('Copied to clipboard!');
+    } catch {
+      alert('Failed to copy. Please copy manually.');
     }
   };
-  
+
   return (
-    <button 
-      onClick={copy} 
-      className="btn btn-ghost text-sm px-3 py-1" 
+    <button
+      onClick={copy}
+      className="btn btn-ghost text-sm px-3 py-1"
       aria-label={label || 'Copy to clipboard'}
       title={label || 'Copy to clipboard'}
     >
@@ -595,7 +596,7 @@ function StepIcon({ step, className }: { step: number; className?: string }) {
       </svg>
     )
   };
-  
+
   return icons[step as keyof typeof icons] || null;
 }
 
