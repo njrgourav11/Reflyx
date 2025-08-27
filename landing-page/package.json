@@ -13,7 +13,12 @@
     "export": "next build && next export",
     "clean": "rm -rf .next out",
     "preview": "next build && next start",
-    "check": "npm run type-check && npm run lint"
+    "check": "npm run type-check && npm run lint",
+    "vercel:build": "npm run check && npm run build",
+    "vercel:dev": "vercel dev",
+    "vercel:deploy": "vercel --prod",
+    "vercel:preview": "vercel",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "framer-motion": "^10.18.0",
