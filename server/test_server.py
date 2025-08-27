@@ -74,44 +74,6 @@ async def query_codebase(request: QueryRequest):
         }
     }
 
-class ExplainRequest(BaseModel):
-    code: str
-    language: str = "python"
-
-class GenerateRequest(BaseModel):
-    prompt: str
-    language: str = "python"
-
-@app.post("/api/v1/explain")
-async def explain_code(request: ExplainRequest):
-    """Code explanation endpoint for testing."""
-    return {
-        "success": True,
-        "code": request.code,
-        "language": request.language,
-        "explanation": f"This {request.language} code does the following: [Test explanation for provided code]",
-        "metadata": {
-            "provider": "test",
-            "model": "test-model",
-            "processing_time": 0.2
-        }
-    }
-
-@app.post("/api/v1/generate")
-async def generate_code(request: GenerateRequest):
-    """Code generation endpoint for testing."""
-    return {
-        "success": True,
-        "prompt": request.prompt,
-        "language": request.language,
-        "generated_code": f"# Generated {request.language} code for: {request.prompt}\nprint('Hello from generated code!')",
-        "metadata": {
-            "provider": "test",
-            "model": "test-model",
-            "processing_time": 0.3
-        }
-    }
-
 @app.get("/api/v1/stats")
 async def get_stats():
     """Get system statistics."""

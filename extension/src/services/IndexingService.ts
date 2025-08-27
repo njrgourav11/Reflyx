@@ -81,9 +81,15 @@ export class IndexingService {
 
             // Update state
             await this.stateManager.setLastIndexTime(Date.now());
-            
+            await this.stateManager.updateIndexingProgress({ status: 'complete' });
+            await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', true);
+
             this.logger.info('Workspace indexing completed successfully');
-            vscode.window.showInformationMessage('Workspace indexing completed!');
+            vscode.window.showInformationMessage('Workspace indexing completed! You can start chatting now.');
+            try {
+                await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
+            } catch {}
+
 
         } catch (error) {
             this.logger.error('Error during workspace indexing:', error);

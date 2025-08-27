@@ -28,8 +28,8 @@ let settingsPanel: SettingsPanel;
 export async function activate(context: vscode.ExtensionContext) {
     try {
         // Initialize core services
-        logger = new Logger('AI-Assistant');
-        logger.info('🚀 Activating AI Coding Assistant extension...');
+        logger = new Logger('Reflyx');
+        logger.info('🚀 Activating Reflyx extension...');
 
         // Initialize configuration manager
         configurationManager = new ConfigurationManager(context);
@@ -43,10 +43,10 @@ export async function activate(context: vscode.ExtensionContext) {
         // Initialize API client with current server URL
         const serverUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get('serverUrl', 'http://localhost:8000');
         apiClient = new ApiClient(serverUrl);
-        
+
         // Initialize indexing service
         indexingService = new IndexingService(apiClient, stateManager);
-        
+
         // Initialize UI components
         statusBar = new StatusBar();
         statusBar.show();
@@ -59,7 +59,7 @@ export async function activate(context: vscode.ExtensionContext) {
         const hoverProvider = new HoverProvider(apiClient);
         const completionProvider = new CompletionProvider(apiClient);
         const codeLensProvider = new CodeLensProvider(apiClient);
-        
+
         // Register providers
         const showInlineExplanations = vscode.workspace.getConfiguration('aiCodingAssistant').get('showInlineExplanations', true);
         if (showInlineExplanations) {
@@ -88,10 +88,10 @@ export async function activate(context: vscode.ExtensionContext) {
                 )
             );
         }
-        
+
         // Register commands
         registerCommands(context);
-        
+
         // Register chat view
         context.subscriptions.push(
             vscode.window.registerWebviewViewProvider(
@@ -104,13 +104,20 @@ export async function activate(context: vscode.ExtensionContext) {
                 }
             )
         );
-        
+
         // Set context for when extension is enabled
         vscode.commands.executeCommand('setContext', 'aiCodingAssistant.enabled', true);
-        
+
+        // Auto-show chat in Activity Bar container on first activation
+        try {
+            await vscode.commands.executeCommand('workbench.view.extension.aiCodingAssistantContainer');
+            // If not indexed yet, the welcome view will show the Index button
+            await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
+        } catch {}
+
         // Check server health
         await checkServerHealth();
-        
+
         // Auto-index workspace if enabled
         const autoIndex = vscode.workspace.getConfiguration('aiCodingAssistant').get('autoIndex', true);
         if (autoIndex && vscode.workspace.workspaceFolders) {
@@ -119,11 +126,19 @@ export async function activate(context: vscode.ExtensionContext) {
             }, 2000);
         }
 
+	        // Initialize indexed context key based on recent index time
+	        try {
+	            const lastIndex = await stateManager.getLastIndexTime();
+	            const indexed = !!lastIndex && lastIndex > 0;
+	            await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', indexed);
+	        } catch {}
+
+
         // Update status bar with current AI mode
         await updateStatusBarWithMode();
-        
-        logger.info('✅ AI Coding Assistant extension activated successfully');
-        
+
+        logger.info('✅ Reflyx extension activated successfully');
+
     } catch (error) {
         logger.error('❌ Failed to activate extension:', error);
         vscode.window.showErrorMessage(
@@ -133,13 +148,13 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-    logger?.info('🔄 Deactivating AI Coding Assistant extension...');
-    
+    logger?.info('🔄 Deactivating Reflyx extension...');
+
     // Cleanup resources
     statusBar?.dispose();
     apiClient?.dispose();
     indexingService?.dispose();
-    
+
     logger?.info('✅ AI Coding Assistant extension deactivated');
 }
 
@@ -152,7 +167,7 @@ function registerCommands(context: vscode.ExtensionContext) {
                     prompt: 'Ask a question about your codebase',
                     placeHolder: 'e.g., "Where is user authentication handled?"'
                 });
-                
+
                 if (query) {
                     await chatProvider.handleQuery(query);
                     await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
@@ -163,7 +178,7 @@ function registerCommands(context: vscode.ExtensionContext) {
             }
         })
     );
-    
+
     // Explain Selection command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.explainSelection', async () => {
@@ -173,21 +188,21 @@ function registerCommands(context: vscode.ExtensionContext) {
                     vscode.window.showWarningMessage('Please select some code to explain');
                     return;
                 }
-                
+
                 const selectedText = editor.document.getText(editor.selection);
                 const language = editor.document.languageId;
                 const filePath = editor.document.uri.fsPath;
-                
+
                 await chatProvider.handleExplainCode(selectedText, language, filePath);
                 await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
-                
+
             } catch (error) {
                 logger.error('Error in explainSelection command:', error);
                 vscode.window.showErrorMessage('Failed to explain code');
             }
         })
     );
-    
+
     // Generate Code command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.generateCode', async () => {
@@ -197,25 +212,25 @@ function registerCommands(context: vscode.ExtensionContext) {
                     vscode.window.showWarningMessage('Please open a file to generate code');
                     return;
                 }
-                
+
                 const prompt = await vscode.window.showInputBox({
                     prompt: 'Describe the code you want to generate',
                     placeHolder: 'e.g., "Create a REST API endpoint for user login"'
                 });
-                
+
                 if (prompt) {
                     const language = editor.document.languageId;
                     await chatProvider.handleGenerateCode(prompt, language);
                     await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
                 }
-                
+
             } catch (error) {
                 logger.error('Error in generateCode command:', error);
                 vscode.window.showErrorMessage('Failed to generate code');
             }
         })
     );
-    
+
     // Find Similar Code command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.findSimilar', async () => {
@@ -225,20 +240,20 @@ function registerCommands(context: vscode.ExtensionContext) {
                     vscode.window.showWarningMessage('Please select some code to find similar patterns');
                     return;
                 }
-                
+
                 const selectedText = editor.document.getText(editor.selection);
                 const language = editor.document.languageId;
-                
+
                 await chatProvider.handleFindSimilar(selectedText, language);
                 await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
-                
+
             } catch (error) {
                 logger.error('Error in findSimilar command:', error);
                 vscode.window.showErrorMessage('Failed to find similar code');
             }
         })
     );
-    
+
     // Refactor Suggestion command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.refactorSuggestion', async () => {
@@ -248,21 +263,21 @@ function registerCommands(context: vscode.ExtensionContext) {
                     vscode.window.showWarningMessage('Please select some code to get refactoring suggestions');
                     return;
                 }
-                
+
                 const selectedText = editor.document.getText(editor.selection);
                 const language = editor.document.languageId;
                 const filePath = editor.document.uri.fsPath;
-                
+
                 await chatProvider.handleRefactorSuggestion(selectedText, language, filePath);
                 await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
-                
+
             } catch (error) {
                 logger.error('Error in refactorSuggestion command:', error);
                 vscode.window.showErrorMessage('Failed to get refactoring suggestions');
             }
         })
     );
-    
+
     // Index Workspace command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.indexWorkspace', async () => {
@@ -271,21 +286,22 @@ function registerCommands(context: vscode.ExtensionContext) {
                     vscode.window.showWarningMessage('Please open a workspace to index');
                     return;
                 }
-                
+
                 const workspacePath = vscode.workspace.workspaceFolders[0].uri.fsPath;
                 await indexingService.indexWorkspace(workspacePath);
-                
+
             } catch (error) {
                 logger.error('Error in indexWorkspace command:', error);
                 vscode.window.showErrorMessage('Failed to index workspace');
             }
         })
     );
-    
+
     // Toggle Chat command
     context.subscriptions.push(
         vscode.commands.registerCommand('aiCodingAssistant.toggleChat', async () => {
             try {
+                await vscode.commands.executeCommand('workbench.view.extension.aiCodingAssistantContainer');
                 await vscode.commands.executeCommand('aiCodingAssistant.chatView.focus');
             } catch (error) {
                 logger.error('Error in toggleChat command:', error);
@@ -301,6 +317,18 @@ function registerCommands(context: vscode.ExtensionContext) {
             } catch (error) {
                 logger.error('Error in openSettings command:', error);
                 vscode.window.showErrorMessage('Failed to open settings panel');
+            }
+        })
+    );
+
+    // React to configuration changes (e.g., server URL)
+    context.subscriptions.push(
+        vscode.workspace.onDidChangeConfiguration(async (e) => {
+            if (e.affectsConfiguration('aiCodingAssistant.serverUrl')) {
+                const serverUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get('serverUrl', 'http://localhost:8000');
+                apiClient.setBaseUrl(serverUrl);
+                await checkServerHealth();
+                await updateIndexedContext();
             }
         })
     );
@@ -396,6 +424,15 @@ async function checkServerHealth() {
         statusBar.setStatus('Connection error', 'error');
         logger.error('❌ Failed to check server health:', error);
     }
+}
+
+
+async function updateIndexedContext() {
+    try {
+        const lastIndex = await stateManager.getLastIndexTime();
+        const indexed = !!lastIndex && lastIndex > 0;
+        await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', indexed);
+    } catch {}
 }
 
 async function updateStatusBarWithMode() {

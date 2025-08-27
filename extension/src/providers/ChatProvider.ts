@@ -198,7 +198,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Coding Assistant</title>
+    <title>Reflyx</title>
     <style>
         body {
             font-family: var(--vscode-font-family);
@@ -271,7 +271,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     <div class="chat-container">
         <div class="messages" id="messages">
             <div class="message assistant-message">
-                <strong>AI Assistant:</strong> Hello! I'm your AI coding assistant. Ask me anything about your codebase or request code explanations and generation.
+                <strong>Reflyx:</strong> Hello! I’m your coding copilot. Ask about your codebase, request explanations, or generate code.
             </div>
         </div>
         <div class="input-container">
@@ -289,7 +289,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         function addMessage(content, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = \`message \${isUser ? 'user-message' : 'assistant-message'}\`;
-            messageDiv.innerHTML = \`<strong>\${isUser ? 'You' : 'AI Assistant'}:</strong> \${content}\`;
+            messageDiv.innerHTML = \`<strong>\${isUser ? 'You' : 'Reflyx'}:</strong> \${content}\`;
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }

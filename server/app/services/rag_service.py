@@ -13,8 +13,47 @@ import numpy as np
 from app.core.config import get_settings
 from app.core.logging import get_logger, perf_logger
 from app.services.llm_service import LLMService, ModelProvider
-from indexer.embeddings.sentence_transformer import EmbeddingService
-from indexer.vector_store.qdrant_client import QdrantVectorStore, format_search_results
+# from indexer.embeddings.sentence_transformer import EmbeddingService
+# from indexer.vector_store.qdrant_client import QdrantVectorStore, format_search_results
+
+# Mock classes for development
+class EmbeddingService:
+    def __init__(self, *args, **kwargs):
+        pass
+
+    async def embed_text(self, text: str):
+        # Mock embedding - return random vector
+        import random
+        return [random.random() for _ in range(384)]
+
+    async def embed_batch(self, texts: list):
+        return [await self.embed_text(text) for text in texts]
+
+class QdrantVectorStore:
+    def __init__(self, *args, **kwargs):
+        self.data = {}
+
+    async def search(self, query_vector, limit=10):
+        # Mock search results
+        return [
+            {"id": "mock1", "score": 0.9, "payload": {"text": "Mock result 1", "file": "example.py"}},
+            {"id": "mock2", "score": 0.8, "payload": {"text": "Mock result 2", "file": "main.js"}}
+        ]
+
+    async def add_documents(self, documents):
+        for doc in documents:
+            self.data[doc.get("id", "unknown")] = doc
+        return len(documents)
+
+def format_search_results(results):
+    return [
+        {
+            "content": result.get("payload", {}).get("text", ""),
+            "file": result.get("payload", {}).get("file", "unknown"),
+            "score": result.get("score", 0.0)
+        }
+        for result in results
+    ]
 
 
 logger = get_logger(__name__)

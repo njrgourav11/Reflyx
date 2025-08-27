@@ -6,7 +6,8 @@ Centralized configuration management using Pydantic settings.
 import os
 from functools import lru_cache
 from typing import List, Optional, Literal
-from pydantic import BaseSettings, Field, validator
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -80,21 +81,24 @@ class Settings(BaseSettings):
     cache_dir: str = Field(default="./cache", env="CACHE_DIR")
     logs_dir: str = Field(default="./logs", env="LOGS_DIR")
     
-    @validator("supported_extensions", pre=True)
+    @field_validator("supported_extensions", mode='before')
+    @classmethod
     def parse_extensions(cls, v):
         """Parse comma-separated extensions from environment variable."""
         if isinstance(v, str):
             return [ext.strip() for ext in v.split(",")]
         return v
     
-    @validator("ignore_patterns", pre=True)
+    @field_validator("ignore_patterns", mode='before')
+    @classmethod
     def parse_ignore_patterns(cls, v):
         """Parse comma-separated ignore patterns from environment variable."""
         if isinstance(v, str):
             return [pattern.strip() for pattern in v.split(",")]
         return v
     
-    @validator("cors_origins", pre=True)
+    @field_validator("cors_origins", mode='before')
+    @classmethod
     def parse_cors_origins(cls, v):
         """Parse comma-separated CORS origins from environment variable."""
         if isinstance(v, str):

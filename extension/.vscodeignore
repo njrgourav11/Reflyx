@@ -11,8 +11,8 @@ tsconfig.json
 .vscode-test/**
 vsc-extension-quickstart.md
 
-# Node.js
-node_modules/**
+# Node.js (do NOT exclude runtime deps – VSCE already prunes dev deps)
+# node_modules/**
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

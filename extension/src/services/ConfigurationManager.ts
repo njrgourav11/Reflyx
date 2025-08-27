@@ -30,6 +30,7 @@ export interface AIModel {
 }
 
 export interface AIConfiguration {
+    serverUrl: string;
     mode: 'local' | 'online' | 'hybrid';
     preferredProvider: string;
     fallbackProvider?: string;
@@ -223,6 +224,7 @@ export class ConfigurationManager {
         }
 
         return {
+            serverUrl: config.get('serverUrl', 'http://localhost:8000'),
             mode: config.get('aiMode', 'local'),
             preferredProvider: config.get('preferredProvider', 'ollama'),
             fallbackProvider: config.get('fallbackProvider'),
@@ -236,6 +238,10 @@ export class ConfigurationManager {
      */
     async updateConfiguration(newConfig: Partial<AIConfiguration>): Promise<void> {
         const config = vscode.workspace.getConfiguration('aiCodingAssistant');
+
+        if (newConfig.serverUrl !== undefined) {
+            await config.update('serverUrl', newConfig.serverUrl, vscode.ConfigurationTarget.Global);
+        }
 
         if (newConfig.mode !== undefined) {
             await config.update('aiMode', newConfig.mode, vscode.ConfigurationTarget.Global);

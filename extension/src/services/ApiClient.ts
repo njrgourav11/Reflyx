@@ -66,7 +66,7 @@ export class ApiClient {
 
     constructor(private baseUrl: string) {
         this.logger = new Logger('ApiClient');
-        
+
         this.client = axios.create({
             baseURL: baseUrl,
             timeout: 30000,
@@ -99,6 +99,16 @@ export class ApiClient {
             }
         );
     }
+
+    /**
+     * Update the base URL at runtime (e.g., when the user changes backend URL)
+     */
+    setBaseUrl(newBaseUrl: string): void {
+        this.baseUrl = newBaseUrl;
+        this.client.defaults.baseURL = newBaseUrl;
+        this.logger.info(`API base URL updated to ${newBaseUrl}`);
+    }
+
 
     /**
      * Check if the backend server is healthy
@@ -135,9 +145,16 @@ export class ApiClient {
      */
     async indexWorkspace(request: IndexRequest): Promise<any> {
         try {
-            const response = await this.client.post('/api/v1/index', request);
+            // Preferred modern endpoint
+            const response = await this.client.post('/api/v1/index/workspace', request);
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
+            // Fallback for legacy servers that expect POST /api/v1/index
+            if (error?.response?.status === 404) {
+                this.logger.warn('Index workspace endpoint not found, falling back to /api/v1/index');
+                const fallback = await this.client.post('/api/v1/index', request);
+                return fallback.data;
+            }
             this.logger.error('Workspace indexing failed:', error);
             throw error;
         }
@@ -207,13 +224,24 @@ export class ApiClient {
      */
     async indexFile(request: { file_path: string; content: string; language: string }): Promise<void> {
         try {
+            // Preferred modern endpoint
             const response = await this.client.post('/api/v1/index/file', {
                 file_path: request.file_path,
                 content: request.content,
                 language: request.language
             });
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
+            // Fallback for legacy servers that expect POST /api/v1/index with file payload
+            if (error?.response?.status === 404) {
+                this.logger.warn('Index file endpoint not found, falling back to /api/v1/index');
+                const fallback = await this.client.post('/api/v1/index', {
+                    file_path: request.file_path,
+                    content: request.content,
+                    language: request.language
+                });
+                return fallback.data;
+            }
             this.logger.error('File indexing failed:', error);
             throw error;
         }
@@ -224,7 +252,7 @@ export class ApiClient {
      */
     async removeFile(request: { file_path: string }): Promise<void> {
         try {
-            const response = await this.client.delete(`/api/v1/index?file_path=${encodeURIComponent(request.file_path)}`);
+            const response = await this.client.delete(`/api/v1/index/file?file_path=${encodeURIComponent(request.file_path)}`);
             return response.data;
         } catch (error) {
             this.logger.error('File removal failed:', error);
@@ -247,6 +275,37 @@ export class ApiClient {
             return response.data;
         } catch (error) {
             this.logger.error('Refactoring suggestions failed:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Indexing status and metadata
+     */
+    async getIndexStatus(workspacePath?: string): Promise<any> {
+        try {
+            const response = await this.client.get('/api/v1/index/status', {
+                params: workspacePath ? { workspace_path: workspacePath } : undefined
+            });
+            return response.data;
+        } catch (error) {
+            this.logger.error('Index status retrieval failed:', error);
+            throw error;
+        }
+    }
+
+    async listIndexedFiles(workspacePath?: string, limit: number = 100, offset: number = 0): Promise<any> {
+        try {
+            const response = await this.client.get('/api/v1/index/files', {
+                params: {
+                    workspace_path: workspacePath,
+                    limit,
+                    offset
+                }
+            });
+            return response.data;
+        } catch (error) {
+            this.logger.error('Indexed files retrieval failed:', error);
             throw error;
         }
     }
@@ -280,7 +339,7 @@ export class ApiClient {
                 try {
                     const message = JSON.parse(data.toString());
                     this.logger.debug('WebSocket message received:', message);
-                    
+
                     if (onMessage) {
                         onMessage(message);
                     }

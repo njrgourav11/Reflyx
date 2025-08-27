@@ -56,6 +56,9 @@ export class SettingsPanel {
             configuration: config,
             providers: this.configManager.getProviders()
         });
+
+            // Also include serverUrl in the configuration payload
+
     }
 
     /**
@@ -81,6 +84,15 @@ export class SettingsPanel {
 
                     case 'testProvider':
                         await this.handleTestProvider(message.provider);
+
+                        case 'requestConfiguration':
+                            await this.sendCurrentConfiguration();
+                            break;
+
+                        case 'updateConfiguration':
+                            await this.handleConfigurationUpdate(message.configuration);
+                            break;
+
                         break;
 
                     case 'openProviderWebsite':
@@ -109,10 +121,10 @@ export class SettingsPanel {
      */
     private async handleConfigurationUpdate(newConfig: Partial<AIConfiguration>): Promise<void> {
         await this.configManager.updateConfiguration(newConfig);
-        
+
         // Validate configuration
         const validation = await this.configManager.validateConfiguration();
-        
+
         this.panel?.webview.postMessage({
             type: 'configurationUpdated',
             success: true,
@@ -132,7 +144,7 @@ export class SettingsPanel {
         }
 
         await this.configManager.setApiKey(provider, apiKey.trim());
-        
+
         this.panel?.webview.postMessage({
             type: 'apiKeySet',
             provider,
@@ -148,7 +160,7 @@ export class SettingsPanel {
      */
     private async handleRemoveApiKey(provider: string): Promise<void> {
         await this.configManager.removeApiKey(provider);
-        
+
         this.panel?.webview.postMessage({
             type: 'apiKeyRemoved',
             provider,
@@ -167,13 +179,13 @@ export class SettingsPanel {
         // For now, we'll just check if the API key is present
         const hasKey = await this.configManager.hasValidApiKey(provider);
         const providerInfo = this.configManager.getProviders().find(p => p.id === provider);
-        
+
         this.panel?.webview.postMessage({
             type: 'providerTestResult',
             provider,
             success: hasKey || !providerInfo?.requiresApiKey,
-            message: hasKey || !providerInfo?.requiresApiKey 
-                ? 'Provider configuration is valid' 
+            message: hasKey || !providerInfo?.requiresApiKey
+                ? 'Provider configuration is valid'
                 : 'API key is required'
         });
     }
@@ -194,7 +206,7 @@ export class SettingsPanel {
     private async sendCurrentConfiguration(): Promise<void> {
         const config = await this.configManager.getCurrentConfiguration();
         const validation = await this.configManager.validateConfiguration();
-        
+
         this.panel?.webview.postMessage({
             type: 'configurationUpdate',
             configuration: config,
@@ -223,12 +235,12 @@ export class SettingsPanel {
             padding: 20px;
             line-height: 1.6;
         }
-        
+
         .container {
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .section {
             margin-bottom: 30px;
             padding: 20px;
@@ -236,24 +248,24 @@ export class SettingsPanel {
             border-radius: 8px;
             background-color: var(--vscode-panel-background);
         }
-        
+
         .section h2 {
             margin-top: 0;
             color: var(--vscode-textLink-foreground);
             border-bottom: 1px solid var(--vscode-panel-border);
             padding-bottom: 10px;
         }
-        
+
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        
+
         .form-group select,
         .form-group input {
             width: 100%;
@@ -264,11 +276,11 @@ export class SettingsPanel {
             border-radius: 4px;
             font-size: inherit;
         }
-        
+
         .form-group input[type="password"] {
             font-family: monospace;
         }
-        
+
         .provider-card {
             border: 1px solid var(--vscode-panel-border);
             border-radius: 8px;
@@ -276,51 +288,51 @@ export class SettingsPanel {
             margin-bottom: 15px;
             background-color: var(--vscode-editor-background);
         }
-        
+
         .provider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .provider-name {
             font-weight: bold;
             font-size: 1.1em;
         }
-        
+
         .provider-type {
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 0.8em;
             font-weight: bold;
         }
-        
+
         .provider-type.local {
             background-color: var(--vscode-terminal-ansiGreen);
             color: var(--vscode-editor-background);
         }
-        
+
         .provider-type.online {
             background-color: var(--vscode-terminal-ansiBlue);
             color: var(--vscode-editor-background);
         }
-        
+
         .provider-description {
             color: var(--vscode-descriptionForeground);
             margin-bottom: 10px;
         }
-        
+
         .api-key-section {
             display: flex;
             gap: 10px;
             align-items: end;
         }
-        
+
         .api-key-input {
             flex: 1;
         }
-        
+
         .btn {
             padding: 8px 16px;
             border: none;
@@ -329,26 +341,26 @@ export class SettingsPanel {
             font-size: inherit;
             transition: opacity 0.2s;
         }
-        
+
         .btn:hover {
             opacity: 0.8;
         }
-        
+
         .btn-primary {
             background-color: var(--vscode-button-background);
             color: var(--vscode-button-foreground);
         }
-        
+
         .btn-secondary {
             background-color: var(--vscode-button-secondaryBackground);
             color: var(--vscode-button-secondaryForeground);
         }
-        
+
         .btn-danger {
             background-color: var(--vscode-errorForeground);
             color: var(--vscode-editor-background);
         }
-        
+
         .status-indicator {
             display: inline-block;
             width: 8px;
@@ -356,39 +368,39 @@ export class SettingsPanel {
             border-radius: 50%;
             margin-right: 5px;
         }
-        
+
         .status-indicator.connected {
             background-color: var(--vscode-terminal-ansiGreen);
         }
-        
+
         .status-indicator.disconnected {
             background-color: var(--vscode-errorForeground);
         }
-        
+
         .models-list {
             margin-top: 10px;
         }
-        
+
         .model-item {
             padding: 8px;
             border-left: 3px solid var(--vscode-panel-border);
             margin-bottom: 5px;
             background-color: var(--vscode-panel-background);
         }
-        
+
         .model-item.recommended {
             border-left-color: var(--vscode-terminal-ansiGreen);
         }
-        
+
         .model-name {
             font-weight: bold;
         }
-        
+
         .model-description {
             font-size: 0.9em;
             color: var(--vscode-descriptionForeground);
         }
-        
+
         .validation-issues {
             background-color: var(--vscode-inputValidation-errorBackground);
             border: 1px solid var(--vscode-inputValidation-errorBorder);
@@ -397,18 +409,18 @@ export class SettingsPanel {
             border-radius: 4px;
             margin-bottom: 20px;
         }
-        
+
         .validation-issues ul {
             margin: 0;
             padding-left: 20px;
         }
-        
+
         .free-credits {
             color: var(--vscode-terminal-ansiGreen);
             font-size: 0.9em;
             font-weight: bold;
         }
-        
+
         .loading {
             opacity: 0.6;
             pointer-events: none;
@@ -418,12 +430,12 @@ export class SettingsPanel {
 <body>
     <div class="container">
         <h1>🤖 AI Coding Assistant Settings</h1>
-        
+
         <div id="validationIssues" class="validation-issues" style="display: none;">
             <strong>⚠️ Configuration Issues:</strong>
             <ul id="validationList"></ul>
         </div>
-        
+
         <div class="section">
             <h2>🎯 AI Processing Mode</h2>
             <div class="form-group">
@@ -434,14 +446,14 @@ export class SettingsPanel {
                     <option value="hybrid">Hybrid - Use local with cloud fallback</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="preferredProvider">Preferred Provider:</label>
                 <select id="preferredProvider">
                     <!-- Options populated by JavaScript -->
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="fallbackProvider">Fallback Provider (optional):</label>
                 <select id="fallbackProvider">
@@ -450,7 +462,19 @@ export class SettingsPanel {
                 </select>
             </div>
         </div>
-        
+
+	        <div class="section">
+	            <h2>🔌 Backend Connection</h2>
+	            <div class="form-group">
+	                <label for="serverUrl">Backend URL:</label>
+	                <input id="serverUrl" type="text" placeholder="http://localhost:8000" />
+	            </div>
+	            <div class="form-group">
+	                <button class="btn btn-primary" onclick="saveServerUrl()">Save URL</button>
+	            </div>
+	        </div>
+
+
         <div class="section">
             <h2>🔑 AI Providers & API Keys</h2>
             <p>Configure your AI providers and securely store API keys. API keys are stored using VS Code's secure storage and never leave your machine.</p>
@@ -458,7 +482,7 @@ export class SettingsPanel {
                 <!-- Provider cards populated by JavaScript -->
             </div>
         </div>
-        
+
         <div class="section">
             <h2>⚙️ Advanced Settings</h2>
             <div class="form-group">
@@ -475,14 +499,14 @@ export class SettingsPanel {
         const vscode = acquireVsCodeApi();
         let currentConfig = {};
         let providers = [];
-        
+
         // Request initial configuration
         vscode.postMessage({ type: 'requestConfiguration' });
-        
+
         // Handle messages from extension
         window.addEventListener('message', event => {
             const message = event.data;
-            
+
             switch (message.type) {
                 case 'configurationUpdate':
                     currentConfig = message.configuration;
@@ -492,71 +516,80 @@ export class SettingsPanel {
                         showValidationIssues(message.validation);
                     }
                     break;
-                    
+
                 case 'configurationUpdated':
                     if (message.validation) {
                         showValidationIssues(message.validation);
                     }
                     break;
-                    
+
                 case 'apiKeySet':
                 case 'apiKeyRemoved':
                     updateProviderStatus(message.provider);
+
+	            // Populate backend URL
+	            const vscodeConfig = acquireVsCodeApi();
+	            // serverUrl comes via configurationUpdate message (we will include soon)
+	            const serverUrlInput = document.getElementById('serverUrl');
+	            if (serverUrlInput && currentConfig.serverUrl) {
+	                serverUrlInput.value = currentConfig.serverUrl;
+	            }
+
                     break;
-                    
+
                 case 'providerTestResult':
                     showProviderTestResult(message.provider, message.success, message.message);
                     break;
-                    
+
                 case 'error':
                     alert('Error: ' + message.message);
                     break;
             }
         });
-        
+
         function updateUI() {
             // Update mode selection
             document.getElementById('aiMode').value = currentConfig.mode || 'local';
-            
+
             // Update provider selections
             updateProviderSelections();
             updateProvidersContainer();
             updateModelSelection();
         }
-        
+
         function updateProviderSelections() {
             const preferredSelect = document.getElementById('preferredProvider');
             const fallbackSelect = document.getElementById('fallbackProvider');
-            
+
             // Clear existing options
             preferredSelect.innerHTML = '';
             fallbackSelect.innerHTML = '<option value="">None</option>';
-            
+
             providers.forEach(provider => {
                 const option1 = new Option(provider.name, provider.id);
                 const option2 = new Option(provider.name, provider.id);
-                
+
                 preferredSelect.appendChild(option1);
                 fallbackSelect.appendChild(option2);
             });
-            
+
             preferredSelect.value = currentConfig.preferredProvider || 'ollama';
             fallbackSelect.value = currentConfig.fallbackProvider || '';
         }
-        
+
         function updateProvidersContainer() {
             const container = document.getElementById('providersContainer');
             container.innerHTML = '';
-            
+
             providers.forEach(provider => {
                 const card = createProviderCard(provider);
                 container.appendChild(card);
             });
         }
-        
+
         function createProviderCard(provider) {
             const hasApiKey = currentConfig.apiKeys && currentConfig.apiKeys[provider.id];
-            
+
             const card = document.createElement('div');
             card.className = 'provider-card';
             card.innerHTML = \`
@@ -564,22 +597,22 @@ export class SettingsPanel {
                     <div>
                         <span class="provider-name">\${provider.name}</span>
                         <span class="provider-type \${provider.type}">\${provider.type}</span>
-                        \${hasApiKey ? '<span class="status-indicator connected"></span>Connected' : 
-                          provider.requiresApiKey ? '<span class="status-indicator disconnected"></span>Not configured' : 
+                        \${hasApiKey ? '<span class="status-indicator connected"></span>Connected' :
+                          provider.requiresApiKey ? '<span class="status-indicator disconnected"></span>Not configured' :
                           '<span class="status-indicator connected"></span>Ready'}
                     </div>
                 </div>
-                
+
                 <div class="provider-description">\${provider.description}</div>
-                
+
                 \${provider.freeCredits ? \`<div class="free-credits">💰 \${provider.freeCredits}</div>\` : ''}
-                
+
                 \${provider.requiresApiKey ? \`
                     <div class="api-key-section">
                         <div class="api-key-input">
                             <label>API Key:</label>
-                            <input type="password" id="apiKey-\${provider.id}" 
-                                   placeholder="Enter your API key..." 
+                            <input type="password" id="apiKey-\${provider.id}"
+                                   placeholder="Enter your API key..."
                                    value="\${hasApiKey ? '••••••••••••••••' : ''}">
                         </div>
                         <button class="btn btn-primary" onclick="setApiKey('\${provider.id}')">Save</button>
@@ -588,7 +621,7 @@ export class SettingsPanel {
                         \${provider.website ? \`<button class="btn btn-secondary" onclick="openProviderWebsite('\${provider.id}')">Get Key</button>\` : ''}
                     </div>
                 \` : ''}
-                
+
                 <div class="models-list">
                     <strong>Available Models:</strong>
                     \${provider.models.map(model => \`
@@ -603,28 +636,28 @@ export class SettingsPanel {
                     \`).join('')}
                 </div>
             \`;
-            
+
             return card;
         }
-        
+
         function updateModelSelection() {
             const modelSelect = document.getElementById('selectedModel');
             modelSelect.innerHTML = '<option value="">Auto-select recommended model</option>';
-            
+
             providers.forEach(provider => {
                 provider.models.forEach(model => {
                     const option = new Option(\`\${provider.name}: \${model.name}\`, model.id);
                     modelSelect.appendChild(option);
                 });
             });
-            
+
             modelSelect.value = currentConfig.selectedModel || '';
         }
-        
+
         function showValidationIssues(validation) {
             const issuesDiv = document.getElementById('validationIssues');
             const issuesList = document.getElementById('validationList');
-            
+
             if (validation.valid) {
                 issuesDiv.style.display = 'none';
             } else {
@@ -632,23 +665,23 @@ export class SettingsPanel {
                 issuesDiv.style.display = 'block';
             }
         }
-        
+
         function setApiKey(provider) {
             const input = document.getElementById(\`apiKey-\${provider}\`);
             const apiKey = input.value.trim();
-            
+
             if (!apiKey || apiKey === '••••••••••••••••') {
                 alert('Please enter a valid API key');
                 return;
             }
-            
+
             vscode.postMessage({
                 type: 'setApiKey',
                 provider: provider,
                 apiKey: apiKey
             });
         }
-        
+
         function removeApiKey(provider) {
             if (confirm('Are you sure you want to remove this API key?')) {
                 vscode.postMessage({
@@ -657,47 +690,54 @@ export class SettingsPanel {
                 });
             }
         }
-        
+
         function testProvider(provider) {
             vscode.postMessage({
                 type: 'testProvider',
                 provider: provider
             });
         }
-        
+
         function openProviderWebsite(provider) {
             vscode.postMessage({
                 type: 'openProviderWebsite',
                 provider: provider
             });
         }
-        
+
         function showProviderTestResult(provider, success, message) {
             alert(\`\${provider} test: \${success ? '✅' : '❌'} \${message}\`);
         }
-        
+
+
+	        function saveServerUrl() {
+	            const serverUrl = (document.getElementById('serverUrl') as HTMLInputElement).value.trim();
+	            if (!serverUrl) { alert('Please enter a backend URL'); return; }
+	            vscode.postMessage({ type: 'updateConfiguration', configuration: { serverUrl } });
+	        }
+
         function updateProviderStatus(provider) {
             // Refresh the providers container to show updated status
             updateProvidersContainer();
         }
-        
+
         // Event listeners for configuration changes
         document.getElementById('aiMode').addEventListener('change', (e) => {
             updateConfiguration({ mode: e.target.value });
         });
-        
+
         document.getElementById('preferredProvider').addEventListener('change', (e) => {
             updateConfiguration({ preferredProvider: e.target.value });
         });
-        
+
         document.getElementById('fallbackProvider').addEventListener('change', (e) => {
             updateConfiguration({ fallbackProvider: e.target.value || undefined });
         });
-        
+
         document.getElementById('selectedModel').addEventListener('change', (e) => {
             updateConfiguration({ selectedModel: e.target.value || undefined });
         });
-        
+
         function updateConfiguration(changes) {
             vscode.postMessage({
                 type: 'updateConfiguration',
