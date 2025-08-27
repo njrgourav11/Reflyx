@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities */
+.nav-link{@apply text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-100}
+.icon-btn{@apply inline-flex items-center justify-center h-9 w-9 rounded-md border border-slate-200 dark:border-slate-800 hover:bg-black/5 dark:hover:bg-white/5}
+.btn{@apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold border border-transparent transition}
+.btn-primary{@apply bg-brand-600 text-white hover:bg-brand-700}
+.btn-secondary{@apply bg-transparent border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-200 hover:bg-black/5 dark:hover:bg-white/5}
+.btn-ghost{@apply text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white}
+.section-title{@apply text-2xl sm:text-3xl font-extrabold}
+.feature-card{@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 outline-none transition will-change-transform}
+.feature-card:hover,.feature-card:focus{@apply -translate-y-0.5 shadow-xl}
+.feature-icon{@apply text-xl}
+.feature-title{@apply mt-1 font-bold}
+.feature-desc{@apply text-slate-600 dark:text-slate-400}
+.step-card{@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 relative}
+.step-number{@apply absolute top-3 right-3 h-8 w-8 grid place-items-center rounded-md bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-200 font-bold}
+.demo-caption{@apply text-slate-500 dark:text-slate-400 mt-1}
+.quote{@apply bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4}
+.stat{@apply text-3xl sm:text-4xl font-extrabold}
+.stat-label{@apply text-slate-500 dark:text-slate-400}
+.faq>summary{@apply cursor-pointer py-4 font-semibold}
+.faq>summary::-webkit-details-marker{display:none}
+.faq>summary::after{content:'+'; @apply ml-2 text-slate-400}
+.faq[open]>summary::after{content:'−'}
+.faq>p{@apply py-2 text-slate-600 dark:text-slate-400}
+:focus-visible{outline:3px solid rgba(124,58,237,.7); outline-offset:2px; border-radius:.5rem}
+
+/* Small accessibility and spacing tweaks */
+@media (max-width: 640px){
+  .btn{ @apply px-3 py-2 text-sm }
+  .section-title{ @apply text-2xl }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Ensure responsive containers */
+.container, main {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Responsive text wrapping */
+@media (max-width: 768px) {
+  .feature-card {
+    @apply p-4;
+  }
+  
+  .feature-card h3 {
+    @apply text-base;
+  }
+  
+  .feature-card p {
+    @apply text-sm;
+  }
+}
+
+/* Enhanced animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(124, 58, 237, 0.6); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #7C3AED, #A855F7, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply relative overflow-hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+/* Scroll animations */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  
+  .animate-on-scroll.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

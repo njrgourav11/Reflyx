@@ -108,8 +108,8 @@ A comprehensive, production-ready AI coding assistant that **matches and exceeds
 ### 1. **Automated Setup**
 ```bash
 # Clone and setup everything automatically
-git clone <repository-url>
-cd ai-coding-assistant
+git clone https://github.com/njrgourav11/Reflyx.git
+cd Reflyx
 python setup.py  # Installs everything: Docker, models, dependencies
 
 # Start all services
@@ -422,8 +422,8 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ### 🆘 **Getting Help**
 - **[🔧 Troubleshooting Guide](docs/TROUBLESHOOTING.md)** - Fix common issues
-- **[🐛 GitHub Issues](https://github.com/your-repo/issues)** - Report bugs
-- **[💬 GitHub Discussions](https://github.com/your-repo/discussions)** - Ask questions
+- **[🐛 GitHub Issues](https://github.com/njrgourav11/Reflyx/issues)** - Report bugs
+- **[💬 GitHub Discussions](https://github.com/njrgourav11/Reflyx/discussions)** - Ask questions
 - **[📖 Full Documentation](docs/)** - Complete guides
 
 ### 🤝 **Community**

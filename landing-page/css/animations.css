@@ -1,0 +1,8 @@
+@keyframes floatIn { 0% { transform: translateY(8px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(8px); }
+.reveal.show { animation: floatIn .6s ease forwards; }
+
+/***** GSAP baseline hooks *****/
+.gsap-fade { opacity: 0; }
+.gsap-up { transform: translateY(20px); opacity: 0; }
+

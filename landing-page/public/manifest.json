@@ -1,0 +1,84 @@
+{
+  "name": "Reflyx - Privacy-First AI Coding Assistant",
+  "short_name": "Reflyx",
+  "description": "Privacy-first AI coding assistant for VS Code with local AI processing, semantic code search, and intelligent code generation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#7C3AED",
+  "orientation": "portrait-primary",
+  "categories": ["developer", "productivity", "utilities"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Reflyx VS Code Extension Desktop View"
+    },
+    {
+      "src": "/images/screenshot-mobile.png",
+      "sizes": "375x667",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Reflyx Landing Page Mobile View"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Install Extension",
+      "short_name": "Install",
+      "description": "Install Reflyx from VS Code Marketplace",
+      "url": "https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx",
+      "icons": [
+        {
+          "src": "/icons/shortcut-install.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "View Features",
+      "short_name": "Features",
+      "description": "Compare Reflyx features with other AI assistants",
+      "url": "/features",
+      "icons": [
+        {
+          "src": "/icons/shortcut-features.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

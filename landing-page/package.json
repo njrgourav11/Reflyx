@@ -1,0 +1,34 @@
+{
+  "name": "reflyx-landing",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "build:analyze": "ANALYZE=true next build",
+    "export": "next build && next export",
+    "clean": "rm -rf .next out",
+    "preview": "next build && next start",
+    "check": "npm run type-check && npm run lint"
+  },
+  "dependencies": {
+    "framer-motion": "^10.18.0",
+    "next": "^14.2.5",
+    "prismjs": "^1.30.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^18.2.66",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.4.8",
+    "typescript": "^5.5.3"
+  }
+}

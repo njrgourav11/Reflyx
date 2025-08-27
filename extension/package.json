@@ -2,8 +2,8 @@
   "name": "reflyx",
   "displayName": "Reflyx",
   "description": "Local AI-powered coding assistant with semantic search and code generation",
-  "version": "1.0.0",
-  "publisher": "ai-coding-assistant",
+  "version": "1.0.2",
+  "publisher": "GouravB",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -326,9 +326,10 @@
     ]
   },
   "scripts": {
+    "bundle": "esbuild src/extension.ts --bundle --platform=node --external:vscode --outfile=out/extension.js --format=cjs --sourcemap=false",
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "npm run bundle",
+    "watch": "esbuild src/extension.ts --bundle --platform=node --external:vscode --outfile=out/extension.js --format=cjs --watch",
     "pretest": "npm run compile",
     "lint": "echo 'Linting skipped for now'",
     "test": "echo 'Tests skipped for now'",
@@ -345,6 +346,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.2.0",
     "@vscode/vsce": "^2.15.0",
+    "esbuild": "^0.25.9",
     "eslint": "^8.57.1",
     "glob": "^8.0.3",
     "mocha": "^10.1.0",
@@ -360,11 +362,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/reflyx.git"
+    "url": "https://github.com/njrgourav11/Reflyx.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/ai-coding-assistant/issues"
+    "url": "https://github.com/njrgourav11/Reflyx/issues"
   },
-  "homepage": "https://github.com/your-username/reflyx#readme",
+  "homepage": "https://github.com/njrgourav11/Reflyx#readme",
   "license": "MIT"
 }

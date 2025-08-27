@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reflyx – AI Coding Assistant for VS Code</title>
+  <meta name="description" content="Reflyx is a modern, privacy‑first AI coding assistant for VS Code. Local AI processing, semantic code search, multi‑provider support, and real‑time code explanations." />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="icon" href="assets/icons/favicon.svg" />
+  <!-- Dark mode bootstrapper -->
+  <script>
+    (function(){
+      const t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { colors: { brand: { DEFAULT:'#6D28D9', 50:'#F5F3FF', 100:'#EDE9FE', 200:'#DDD6FE', 300:'#C4B5FD', 400:'#A78BFA', 500:'#8B5CF6', 600:'#7C3AED', 700:'#6D28D9', 800:'#5B21B6', 900:'#4C1D95'} } } } };</script>
+  <!-- Prism for code highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" />
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+<body class="bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:m-4 focus:rounded focus:px-4 focus:py-2 focus:bg-brand-600 focus:text-white">Skip to content</a>
+
+  <!-- Header / Nav -->
+  <header class="sticky top-0 z-50 backdrop-blur bg-white/70 dark:bg-slate-900/70 border-b border-slate-200/60 dark:border-slate-800">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="assets/icons/favicon.svg" alt="Reflyx icon" class="h-8 w-8" />
+        <span class="text-lg font-semibold">Reflyx</span>
+      </div>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how" class="nav-link">Get Started</a>
+        <a href="#demo" class="nav-link">Demo</a>
+        <a href="#specs" class="nav-link">Specs</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+        <a href="https://github.com/your-username/reflyx" class="nav-link" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" aria-label="Toggle dark mode" class="icon-btn" title="Toggle dark mode">
+          <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx" target="_blank" rel="noopener" class="btn btn-primary">Install</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="text-4xl sm:text-5xl font-extrabold leading-tight">
+            Supercharge VS Code with a Privacy‑First AI Coding Assistant
+          </h1>
+          <p class="mt-5 text-lg text-slate-600 dark:text-slate-300 max-w-prose">
+            Reflyx runs local AI models for private coding assistance, with optional cloud providers. Enjoy semantic code search, real‑time explanations, and intelligent code generation—right inside your editor.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx" class="btn btn-primary">Install from Marketplace</a>
+            <a href="#how" class="btn btn-secondary">How it works</a>
+            <button id="copyInstall" class="btn btn-ghost" aria-label="Copy install command">Copy install command</button>
+          </div>
+          <div class="mt-6 text-sm text-slate-500 dark:text-slate-400">Free • Open Source • Offline‑first</div>
+        </div>
+        <div class="relative">
+          <div class="rounded-xl ring-1 ring-slate-200 dark:ring-slate-800 bg-slate-50 dark:bg-slate-800 p-2 shadow-xl">
+            <img src="assets/images/screenshot-hero.png" alt="Reflyx extension in VS Code" class="rounded-lg object-cover" />
+          </div>
+          <p class="sr-only">Screenshot preview of the Reflyx VS Code extension</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-12 border-t border-slate-200/60 dark:border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div><div class="stat" data-target="100">0</div><p class="stat-label">Projects Indexed</p></div>
+        <div><div class="stat" data-target="2000">0</div><p class="stat-label">Developers Helped</p></div>
+        <div><div class="stat" data-target="15">0</div><p class="stat-label">Supported Languages</p></div>
+        <div><div class="stat" data-target="5">0</div><p class="stat-label">AI Providers</p></div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="section-title">Powerful features built for productivity</h2>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">🔒</div>
+            <h3 class="feature-title">Local AI Processing</h3>
+            <p class="feature-desc">Run models via Ollama for private, offline coding help. Your code never leaves your machine.</p>
+          </article>
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">🔎</div>
+            <h3 class="feature-title">Semantic Code Search</h3>
+            <p class="feature-desc">Find relevant snippets instantly with vector search over your codebase.</p>
+          </article>
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">🔌</div>
+            <h3 class="feature-title">Multi‑provider Support</h3>
+            <p class="feature-desc">Use OpenAI, Anthropic, Google, Groq and more—choose local, cloud, or hybrid modes.</p>
+          </article>
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">💡</div>
+            <h3 class="feature-title">Real‑time Explanations</h3>
+            <p class="feature-desc">Hover to understand complex code with clear, contextual explanations.</p>
+          </article>
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">⚙️</div>
+            <h3 class="feature-title">Intelligent Generation</h3>
+            <p class="feature-desc">Create functions, tests, and refactors with production‑ready code suggestions.</p>
+          </article>
+          <article class="feature-card" tabindex="0">
+            <div class="feature-icon">🧩</div>
+            <h3 class="feature-title">VS Code Native</h3>
+            <p class="feature-desc">CodeLens, hovers, completions and a chat view that feels right at home.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- How to Get Started -->
+    <section id="how" class="py-20 bg-slate-50 dark:bg-slate-800/40 border-y border-slate-200/60 dark:border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="section-title">Get started in minutes</h2>
+        <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <li class="step-card"><span class="step-number">1</span><h3 class="step-title">Install</h3><p>Install from VS Code Marketplace.</p><a class="step-link" href="https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx">Open Marketplace →</a></li>
+          <li class="step-card"><span class="step-number">2</span><h3 class="step-title">Configure</h3><p>Pick your AI providers and set API keys securely.</p></li>
+          <li class="step-card"><span class="step-number">3</span><h3 class="step-title">Index</h3><p>Index your workspace for semantic search.</p></li>
+          <li class="step-card"><span class="step-number">4</span><h3 class="step-title">Use AI</h3><p>Ask questions, explain code, and generate with confidence.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Demo / Screenshots -->
+    <section id="demo" class="py-20">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="section-title">See Reflyx in action</h2>
+        <div class="mt-10 grid gap-6 sm:grid-cols-2">
+          <figure class="demo-card"><img src="assets/images/screenshot-chat.png" alt="Chat view answering a query" class="rounded-lg shadow"/><figcaption class="demo-caption">Chat view with semantic context</figcaption></figure>
+          <figure class="demo-card"><img src="assets/images/screenshot-hover.png" alt="Code hover explanation" class="rounded-lg shadow"/><figcaption class="demo-caption">Inline explanations on hover</figcaption></figure>
+        </div>
+        <div class="mt-10 rounded-xl bg-slate-900/90 text-slate-100 p-6 ring-1 ring-slate-800">
+          <div class="flex items-center justify-between mb-3"><h3 class="font-semibold">Install via CLI</h3><button id="copyCode" class="copy-btn" aria-label="Copy snippet">Copy</button></div>
+          <pre class="language-bash"><code class="language-bash">code --install-extension GouravB.reflyx</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Technical Specs -->
+    <section id="specs" class="py-20 bg-slate-50 dark:bg-slate-800/40 border-y border-slate-200/60 dark:border-slate-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-10 lg:grid-cols-2">
+        <div>
+          <h2 class="section-title">Technical specifications</h2>
+          <ul class="mt-6 space-y-3 list-disc list-inside text-slate-600 dark:text-slate-300">
+            <li>VS Code extension (TypeScript) with FastAPI backend</li>
+            <li>Local embeddings with sentence-transformers; Tree-sitter parsing</li>
+            <li>Vector DB: Qdrant/ChromaDB; Local LLM via Ollama; optional cloud LLMs</li>
+            <li>RAG pipeline, offline‑first architecture, secure API key storage</li>
+            <li>Accessibility: WCAG 2.1 AA‑aligned color contrast and focus states</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold">License & Pricing</h3>
+          <p class="mt-2 text-slate-600 dark:text-slate-300">100% Free & Open Source under MIT License. Use locally with zero data exfiltration.</p>
+          <div class="mt-6 grid sm:grid-cols-2 gap-4">
+            <blockquote class="quote"><p>“The best offline AI helper I’ve tried.”</p><footer>— Senior Engineer</footer></blockquote>
+            <blockquote class="quote"><p>“Semantics + speed = instant productivity.”</p><footer>— Tech Lead</footer></blockquote>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <div class="mt-8 divide-y divide-slate-200 dark:divide-slate-800" role="list">
+          <details class="faq" role="listitem"><summary>Does Reflyx work offline?</summary><p>Yes. With Ollama and local embeddings, Reflyx works fully offline. You can optionally enable cloud models.</p></details>
+          <details class="faq" role="listitem"><summary>Is my code sent to external servers?</summary><p>Not in local mode. Your code stays on your machine. Hybrid/online modes only send what’s necessary.</p></details>
+          <details class="faq" role="listitem"><summary>Which languages are supported?</summary><p>Popular languages including TypeScript, Python, Go, Rust, Java, C/C++, and more.</p></details>
+          <details class="faq" role="listitem"><summary>How do I install?</summary><p>Install from the VS Code Marketplace or use the CLI command above.</p></details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-10 border-t border-slate-200/60 dark:border-slate-800 text-sm">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-slate-500">© <span id="year"></span> Reflyx • MIT License</p>
+      <nav class="flex items-center gap-4">
+        <a href="https://github.com/your-username/reflyx" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        <a href="#" class="nav-link">Docs</a>
+        <a href="mailto:support@example.com" class="nav-link">Support</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- Libs -->
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <!-- App JS -->
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+</body>
+</html>
+
