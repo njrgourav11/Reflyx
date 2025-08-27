@@ -14,7 +14,7 @@
     "clean": "rm -rf .next out",
     "preview": "next build && next start",
     "check": "npm run type-check && npm run lint",
-    "vercel:build": "npm run check && npm run build",
+    "vercel:build": "npm run check && next build",
     "vercel:dev": "vercel dev",
     "vercel:deploy": "vercel --prod",
     "vercel:preview": "vercel",
