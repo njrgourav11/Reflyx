@@ -12,73 +12,24 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/icons/favicon-16x16.png",
-      "sizes": "16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/favicon-32x32.png",
-      "sizes": "32x32",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "/icons/android-chrome-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/android-chrome-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/icons/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/images/screenshot-desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Reflyx VS Code Extension Desktop View"
-    },
-    {
-      "src": "/images/screenshot-mobile.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Reflyx Landing Page Mobile View"
-    }
-  ],
+  "screenshots": [],
   "shortcuts": [
     {
       "name": "Install Extension",
       "short_name": "Install",
       "description": "Install Reflyx from VS Code Marketplace",
-      "url": "https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx",
-      "icons": [
-        {
-          "src": "/icons/shortcut-install.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "https://marketplace.visualstudio.com/items?itemName=GouravB.reflyx"
     },
     {
       "name": "View Features",
       "short_name": "Features",
       "description": "Compare Reflyx features with other AI assistants",
-      "url": "/features",
-      "icons": [
-        {
-          "src": "/icons/shortcut-features.png",
-          "sizes": "96x96"
-        }
-      ]
+      "url": "/features"
     }
   ]
 }

@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'Reflyx',
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/images/reflyx.png',
         width: 1200,
         height: 630,
         alt: 'Reflyx AI Coding Assistant - Privacy-first local AI for VS Code',
@@ -65,20 +65,12 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Reflyx – Privacy-First AI Coding Assistant for VS Code',
     description: 'Local AI processing, semantic code search, and intelligent code generation. Free and open-source.',
-    images: ['/images/twitter-card.png'],
+    images: ['/images/reflyx.png'],
     creator: '@njrgourav11',
   },
   icons: {
     icon: [
-      { url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icons/favicon.svg', type: 'image/svg+xml' },
-    ],
-    apple: [
-      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      { rel: 'mask-icon', url: '/icons/safari-pinned-tab.svg', color: '#7C3AED' },
     ],
   },
   manifest: '/manifest.json',
@@ -131,7 +123,7 @@ const structuredData = {
     "Privacy-first Design",
     "Offline Capability"
   ],
-  "screenshot": "https://reflyx.dev/images/screenshot.png",
+  "screenshot": "https://reflyx.dev/images/reflyx.png",
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.8",
