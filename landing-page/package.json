@@ -17,8 +17,7 @@
     "vercel:build": "npm run check && next build",
     "vercel:dev": "vercel dev",
     "vercel:deploy": "vercel --prod",
-    "vercel:preview": "vercel",
-    "postbuild": "next-sitemap"
+    "vercel:preview": "vercel"
   },
   "dependencies": {
     "framer-motion": "^10.18.0",
