@@ -1,4 +1,3 @@
-# Azure DevOps Pipeline: Build and Deploy to Azure Container Apps
 trigger:
 - master
 
@@ -15,51 +14,26 @@ steps:
 - checkout: self
   displayName: 'Checkout code'
 
-
-# Azure CLI login using service principal
 - task: AzureCLI@2
-  displayName: 'Azure Login'
+  displayName: 'Build, Push, and Deploy'
   inputs:
-    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'   # <-- Configure in Project Settings > Service connections
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      echo "Logged into Azure"
-
-- task: AzureCLI@2
-  displayName: 'Login to ACR'
-  inputs:
-    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
+    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'   # Service connection must exist
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
       set -e
+
+      echo "=== Azure Login Complete ==="
+      echo "Logging in to ACR..."
       az acr login --name $(ACR_NAME)
 
-- task: AzureCLI@2
-  displayName: 'Build and Push Docker Image'
-  inputs:
-    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      set -e
       IMAGE_TAG=$(ACR_LOGIN_SERVER)/$(IMAGE_NAME):$(TAG)
-      echo "Building image $IMAGE_TAG"
+      echo "Building and pushing image: $IMAGE_TAG"
       docker build -f $(DOCKERFILE_PATH) -t $IMAGE_TAG $(CONTEXT_PATH)
       docker push $IMAGE_TAG
 
-- task: AzureCLI@2
-  displayName: 'Deploy to Azure Container Apps'
-  inputs:
-    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
-    scriptType: 'bash'
-    scriptLocation: 'inlineScript'
-    inlineScript: |
-      set -e
-      IMAGE_TAG=$(ACR_LOGIN_SERVER)/$(IMAGE_NAME):$(TAG)
-
-      # Ensure Container Apps environment exists
+      echo "Deploying to Azure Container Apps..."
+      # Ensure environment exists
       az containerapp env show \
         --name $(CONTAINERAPPS_ENV) \
         --resource-group $(AZURE_RESOURCE_GROUP) \
@@ -69,7 +43,7 @@ steps:
         --resource-group $(AZURE_RESOURCE_GROUP) \
         --location $(AZURE_REGION)
 
-      # Create or update the Container App
+      # Create or update Container App
       if az containerapp show --name $(CONTAINERAPPS_NAME) --resource-group $(AZURE_RESOURCE_GROUP) >/dev/null 2>&1; then
         az containerapp update \
           --name $(CONTAINERAPPS_NAME) \
@@ -103,6 +77,5 @@ steps:
             WORKERS=$(WORKERS)
       fi
 
-      # Output URL
       FQDN=$(az containerapp show --name $(CONTAINERAPPS_NAME) --resource-group $(AZURE_RESOURCE_GROUP) --query properties.configuration.ingress.fqdn -o tsv)
-      echo "Backend URL: https://$FQDN"
+      echo "=== Backend URL: https://$FQDN ==="
