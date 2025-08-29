@@ -1,0 +1,45 @@
+name: Node CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  server-node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: |
+          cd server-node
+          npm ci
+      - name: Build
+        run: |
+          cd server-node
+          npm run build
+      - name: Test
+        run: |
+          cd server-node
+          npm test -- --ci
+
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: |
+          cd extension
+          npm ci
+      - name: Compile
+        run: |
+          cd extension
+          npm run compile
+

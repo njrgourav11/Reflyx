@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Reflyx Multi-Agent API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/v1/agents/analyzer:
+    post:
+      summary: Run Codebase Analyzer Agent
+      responses:
+        '200': { description: OK }
+  /api/v1/agents/architecture:
+    post:
+      summary: Run Architecture & SDLC Planning Agent
+      responses:
+        '200': { description: OK }
+  /api/v1/agents/generator:
+    post:
+      summary: Run Production Code Generator Agent
+      responses:
+        '200': { description: OK }
+  /api/v1/agents/fixer:
+    post:
+      summary: Run Code Quality & Bug Resolution Agent
+      responses:
+        '200': { description: OK }
+  /api/v1/agents/testing:
+    post:
+      summary: Run QA & Testing Agent
+      responses:
+        '200': { description: OK }
+  /api/v1/agents/orchestrate:
+    post:
+      summary: Run Full-Stack Development Orchestrator
+      responses:
+        '200': { description: OK }
+

@@ -1,8 +1,20 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/api/v1/(.*)", "dest": "/api/index.py" },
-    { "src": "/", "dest": "/api/index.py" }
+    { "src": "/api/v1/health/detailed", "dest": "/api/api/v1/health/detailed.ts" },
+    { "src": "/api/v1/health", "dest": "/api/api/v1/health.ts" },
+    { "src": "/api/v1/query/stream", "dest": "/api/api/v1/query/stream.ts" },
+    { "src": "/api/v1/query", "dest": "/api/api/v1/query.ts" },
+    { "src": "/api/v1/explain", "dest": "/api/api/v1/explain.ts" },
+    { "src": "/api/v1/generate/stream", "dest": "/api/api/v1/generate/stream.ts" },
+    { "src": "/api/v1/generate", "dest": "/api/api/v1/generate.ts" },
+    { "src": "/api/v1/index/file", "dest": "/api/api/v1/index/file.ts" },
+    { "src": "/api/v1/index/workspace", "dest": "/api/api/v1/index/workspace.ts" },
+    { "src": "/api/v1/index", "dest": "/api/api/v1/index/index.ts" },
+    { "src": "/api/v1/similar", "dest": "/api/api/v1/similar.ts" },
+    { "src": "/api/v1/refactor", "dest": "/api/api/v1/refactor.ts" },
+    { "src": "/api/v1/stats", "dest": "/api/api/v1/stats.ts" },
+    { "src": "/(.*)", "dest": "/api/api/v1/health.ts" }
   ],
   "env": {
     "LOG_LEVEL": "INFO"

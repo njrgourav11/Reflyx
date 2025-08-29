@@ -268,22 +268,25 @@ GROQ_API_KEY=your_key_here
 ```
 ai-coding-assistant/
 ├── extension/          # VS Code extension (TypeScript)
-├── server/            # FastAPI backend (Python)
-├── indexer/           # Code parsing & embedding
-├── docker-compose.yml # Local development setup
-└── docs/             # Documentation
+├── api/                # Vercel serverless functions (Node/TypeScript)
+├── server-node/        # Local Express server (optional, WS dev/multi-agent)
+├── docs/               # Documentation
+└── landing-page/       # Marketing site (Next.js)
 ```
 
 ### Running in Development Mode
 ```bash
-# Backend with hot reload
-cd server && python -m uvicorn app.main:app --reload
+# Start Vercel serverless locally
+vercel dev
 
 # Extension development
-cd extension && npm run watch
+cd extension && npm install && npm run watch
 
-# Vector database
+# Optional: Local Qdrant
 docker run -p 6333:6333 qdrant/qdrant
+
+# Optional: Local Express server for WS/multi-agent
+cd server-node && npm install && npm run dev
 ```
 
 ## 🐛 Troubleshooting

@@ -1,0 +1,12 @@
+{
+  "name": "reflyx-serverless-api",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "web-tree-sitter": "^0.20.8"
+  },
+  "scripts": {
+    "fetch-grammars": "node _scripts/fetch-grammars.mjs"
+  }
+}
+
