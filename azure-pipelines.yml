@@ -1,0 +1,108 @@
+# Azure DevOps Pipeline: Build and Deploy to Azure Container Apps
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  IMAGE_NAME: 'my-app'                   # <-- Change to your image name
+  DOCKERFILE_PATH: 'Dockerfile'          # <-- Change if needed
+  CONTEXT_PATH: '.'                      # <-- Change if needed
+  TAG: '$(Build.BuildId)'                # Automatically generated build ID
+
+steps:
+- task: Checkout@v3
+  displayName: 'Checkout code'
+
+# Azure CLI login using service principal
+- task: AzureCLI@2
+  displayName: 'Azure Login'
+  inputs:
+    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'   # <-- Configure in Project Settings > Service connections
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "Logged into Azure"
+
+- task: AzureCLI@2
+  displayName: 'Login to ACR'
+  inputs:
+    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e
+      az acr login --name $(ACR_NAME)
+
+- task: AzureCLI@2
+  displayName: 'Build and Push Docker Image'
+  inputs:
+    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e
+      IMAGE_TAG=$(ACR_LOGIN_SERVER)/$(IMAGE_NAME):$(TAG)
+      echo "Building image $IMAGE_TAG"
+      docker build -f $(DOCKERFILE_PATH) -t $IMAGE_TAG $(CONTEXT_PATH)
+      docker push $IMAGE_TAG
+
+- task: AzureCLI@2
+  displayName: 'Deploy to Azure Container Apps'
+  inputs:
+    azureSubscription: '$(AZURE_SERVICE_CONNECTION)'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      set -e
+      IMAGE_TAG=$(ACR_LOGIN_SERVER)/$(IMAGE_NAME):$(TAG)
+
+      # Ensure Container Apps environment exists
+      az containerapp env show \
+        --name $(CONTAINERAPPS_ENV) \
+        --resource-group $(AZURE_RESOURCE_GROUP) \
+        >/dev/null 2>&1 || \
+      az containerapp env create \
+        --name $(CONTAINERAPPS_ENV) \
+        --resource-group $(AZURE_RESOURCE_GROUP) \
+        --location $(AZURE_REGION)
+
+      # Create or update the Container App
+      if az containerapp show --name $(CONTAINERAPPS_NAME) --resource-group $(AZURE_RESOURCE_GROUP) >/dev/null 2>&1; then
+        az containerapp update \
+          --name $(CONTAINERAPPS_NAME) \
+          --resource-group $(AZURE_RESOURCE_GROUP) \
+          --image $IMAGE_TAG \
+          --ingress external --target-port 8000 \
+          --registry-server $(ACR_LOGIN_SERVER) \
+          --set-env-vars \
+            QDRANT_URL=$(QDRANT_URL) \
+            REDIS_URL=$(REDIS_URL) \
+            OLLAMA_URL=$(OLLAMA_URL) \
+            EMBEDDING_MODEL=$(EMBEDDING_MODEL) \
+            CORS_ORIGINS=$(CORS_ORIGINS) \
+            LOG_LEVEL=$(LOG_LEVEL) \
+            WORKERS=$(WORKERS)
+      else
+        az containerapp create \
+          --name $(CONTAINERAPPS_NAME) \
+          --resource-group $(AZURE_RESOURCE_GROUP) \
+          --environment $(CONTAINERAPPS_ENV) \
+          --image $IMAGE_TAG \
+          --ingress external --target-port 8000 \
+          --registry-server $(ACR_LOGIN_SERVER) \
+          --set-env-vars \
+            QDRANT_URL=$(QDRANT_URL) \
+            REDIS_URL=$(REDIS_URL) \
+            OLLAMA_URL=$(OLLAMA_URL) \
+            EMBEDDING_MODEL=$(EMBEDDING_MODEL) \
+            CORS_ORIGINS=$(CORS_ORIGINS) \
+            LOG_LEVEL=$(LOG_LEVEL) \
+            WORKERS=$(WORKERS)
+      fi
+
+      # Output URL
+      FQDN=$(az containerapp show --name $(CONTAINERAPPS_NAME) --resource-group $(AZURE_RESOURCE_GROUP) --query properties.configuration.ingress.fqdn -o tsv)
+      echo "Backend URL: https://$FQDN"
