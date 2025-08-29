@@ -2,7 +2,7 @@
   "name": "reflyx",
   "displayName": "Reflyx",
   "description": "Local AI-powered coding assistant with semantic search and code generation",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "publisher": "GouravB",
   "engines": {
     "vscode": "^1.74.0"
@@ -170,7 +170,7 @@
       "properties": {
         "aiCodingAssistant.serverUrl": {
           "type": "string",
-          "default": "http://localhost:8000",
+          "default": "https://reflyx-backend.vercel.app",
           "description": "URL of the AI Coding Assistant backend server"
         },
         "aiCodingAssistant.aiMode": {
