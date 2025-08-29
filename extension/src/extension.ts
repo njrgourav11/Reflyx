@@ -41,7 +41,8 @@ export async function activate(context: vscode.ExtensionContext) {
         const currentConfig = await configurationManager.getCurrentConfiguration();
 
         // Initialize API client with current server URL
-        const serverUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get('serverUrl', 'http://localhost:8000');
+        const configuredUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get<string>('serverUrl');
+        const serverUrl = configuredUrl && configuredUrl.trim().length > 0 ? configuredUrl : 'https://reflyx-backend.vercel.app';
         apiClient = new ApiClient(serverUrl);
 
         // Initialize indexing service
@@ -335,7 +336,8 @@ function registerCommands(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.workspace.onDidChangeConfiguration(async (e) => {
             if (e.affectsConfiguration('aiCodingAssistant.serverUrl')) {
-                const serverUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get('serverUrl', 'http://localhost:8000');
+                const configuredUrl = vscode.workspace.getConfiguration('aiCodingAssistant').get<string>('serverUrl');
+                const serverUrl = configuredUrl && configuredUrl.trim().length > 0 ? configuredUrl : 'https://reflyx-backend.vercel.app';
                 apiClient.setBaseUrl(serverUrl);
                 await checkServerHealth();
                 await updateIndexedContext();

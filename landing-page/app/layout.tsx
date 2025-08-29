@@ -8,6 +8,7 @@ import Script from 'next/script'
 // Read from environment (configure in .env/.env.local)
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || ''
 const GSC_VERIFICATION = process.env.NEXT_PUBLIC_GSC_VERIFICATION || ''
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://reflyx-ai.vercel.app'
 
 export const metadata: Metadata = { 
   title: 'Reflyx – Privacy-First AI Coding Assistant & GitHub Copilot Alternative',
@@ -53,9 +54,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Gourav', url: 'https://github.com/njrgourav11' }],
   creator: 'Gourav',
   publisher: 'Reflyx',
-  metadataBase: new URL('https://reflyx-ai.vercel.app'),
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: 'https://reflyx-ai.vercel.app',
+    canonical: SITE_URL,
   },
   robots: {
     index: true,
@@ -71,7 +72,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://reflyx-ai.vercel.app',
+    url: SITE_URL,
     title: 'Reflyx – Privacy-First Local AI Coding Assistant for VS Code',
     description:
       'Reflyx is a secure, offline-capable AI coding assistant for VS Code with semantic code search, completions, and code generation. Free, open source, and a powerful GitHub Copilot alternative.',

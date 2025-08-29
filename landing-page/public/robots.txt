@@ -1,9 +1,6 @@
-# *
+# General crawling policy
 User-agent: *
 Allow: /
 
-# Host
-Host: https://reflyx-ai.vercel.app/
-
-# Sitemaps
+# Explicit sitemap location
 Sitemap: https://reflyx-ai.vercel.app/sitemap.xml
