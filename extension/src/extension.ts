@@ -105,6 +105,16 @@ export async function activate(context: vscode.ExtensionContext) {
             )
         );
 
+        // Update health indicator on focus
+        context.subscriptions.push(
+            vscode.window.onDidChangeWindowState(async () => {
+                try {
+                    const ok = await apiClient.healthCheck();
+                    chatProvider?.setHealth(!!ok);
+                } catch {}
+            })
+        );
+
         // Set context for when extension is enabled
         vscode.commands.executeCommand('setContext', 'aiCodingAssistant.enabled', true);
 
@@ -403,6 +413,7 @@ async function checkServerHealth() {
 
         if (isHealthy) {
             await updateStatusBarWithMode();
+            try { chatProvider?.setHealth(true); } catch {}
             logger.info('✅ Backend server is healthy');
         } else {
             statusBar.setStatus('Server unavailable', 'error');
@@ -422,6 +433,7 @@ async function checkServerHealth() {
 
     } catch (error) {
         statusBar.setStatus('Connection error', 'error');
+        try { chatProvider?.setHealth(false); } catch {}
         logger.error('❌ Failed to check server health:', error);
     }
 }

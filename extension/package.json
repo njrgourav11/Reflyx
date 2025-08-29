@@ -2,7 +2,7 @@
   "name": "reflyx",
   "displayName": "Reflyx",
   "description": "Local AI-powered coding assistant with semantic search and code generation",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "GouravB",
   "engines": {
     "vscode": "^1.74.0"
@@ -145,7 +145,7 @@
         {
           "id": "aiCodingAssistantContainer",
           "title": "Reflyx",
-          "icon": "media/icon.svg"
+          "icon": "media/icon-activitybar.svg"
         }
       ]
     },
@@ -326,7 +326,7 @@
     ]
   },
   "scripts": {
-    "bundle": "esbuild src/extension.ts --bundle --platform=node --external:vscode --outfile=out/extension.js --format=cjs --sourcemap=false",
+    "bundle": "esbuild src/extension.ts --bundle --platform=node --external:vscode --outfile=out/extension.js --format=cjs",
     "vscode:prepublish": "npm run compile",
     "compile": "npm run bundle",
     "watch": "esbuild src/extension.ts --bundle --platform=node --external:vscode --outfile=out/extension.js --format=cjs --watch",

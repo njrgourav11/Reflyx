@@ -84,15 +84,6 @@ export class SettingsPanel {
 
                     case 'testProvider':
                         await this.handleTestProvider(message.provider);
-
-                        case 'requestConfiguration':
-                            await this.sendCurrentConfiguration();
-                            break;
-
-                        case 'updateConfiguration':
-                            await this.handleConfigurationUpdate(message.configuration);
-                            break;
-
                         break;
 
                     case 'openProviderWebsite':

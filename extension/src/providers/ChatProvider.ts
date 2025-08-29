@@ -50,8 +50,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     private async handleMessage(data: any) {
         try {
             switch (data.type) {
+                case 'sendMessage':
                 case 'query':
-                    await this.handleQuery(data.query);
+                    await this.handleQuery(data.query || data.text || data.content);
                     break;
                 case 'explain':
                     await this.handleExplainCode(data.code, data.language, data.filePath);
@@ -59,6 +60,28 @@ export class ChatProvider implements vscode.WebviewViewProvider {
                 case 'generate':
                     await this.handleGenerateCode(data.prompt, data.language);
                     break;
+                case 'indexCurrent': {
+                    const editor = vscode.window.activeTextEditor;
+                    if (!editor) {
+                        this.sendMessage({ type: 'error', message: 'Open a file to index.' });
+                        return;
+                    }
+                    const filePath = editor.document.fileName;
+                    const content = editor.document.getText();
+                    const language = editor.document.languageId;
+                    try {
+                        await this.apiClient.indexFile({ file_path: filePath, content, language });
+                        // Mark as indexed for the UI to unlock full chat features
+                        try {
+                            await this.stateManager.setLastIndexTime(Date.now());
+                            await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', true);
+                        } catch {}
+                        this.sendMessage({ type: 'indexed', message: `Indexed ${filePath}` });
+                    } catch (err: any) {
+                        this.sendMessage({ type: 'error', message: err?.message || 'Indexing failed' });
+                    }
+                    break;
+                }
                 default:
                     this.logger.warn(`Unknown message type: ${data.type}`);
             }
@@ -192,6 +215,12 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         }
     }
 
+    public setHealth(ok: boolean) {
+        if (this.view) {
+            this.view.webview.postMessage({ type: 'health', ok });
+        }
+    }
+
     private getHtmlForWebview(webview: vscode.Webview): string {
         return `<!DOCTYPE html>
 <html lang="en">
@@ -265,17 +294,23 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             border-radius: 4px;
             overflow-x: auto;
         }
+        /* Header and status styles */
+        .header { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-bottom: 1px solid var(--vscode-panel-border); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ff5252; display: inline-block; }
+        .dot.healthy { background: #4caf50; }
     </style>
 </head>
 <body>
     <div class="chat-container">
+        <div class="header"><span class="dot" id="statusDot"></span><span id="statusText">Connecting…</span></div>
         <div class="messages" id="messages">
             <div class="message assistant-message">
                 <strong>Reflyx:</strong> Hello! I’m your coding copilot. Ask about your codebase, request explanations, or generate code.
             </div>
         </div>
         <div class="input-container">
-            <input type="text" id="queryInput" class="input-field" placeholder="Ask about your code..." />
+            <textarea id="input" class="input-field" placeholder="Ask about your codebase…" style="min-height:44px;max-height:140px;resize:none;"></textarea>
+            <button id="indexBtn" class="send-button" title="Index current file">Index</button>
             <button id="sendButton" class="send-button">Send</button>
         </div>
     </div>
@@ -283,8 +318,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     <script>
         const vscode = acquireVsCodeApi();
         const messagesContainer = document.getElementById('messages');
-        const queryInput = document.getElementById('queryInput');
+        const input = document.getElementById('input');
         const sendButton = document.getElementById('sendButton');
+        const indexBtn = document.getElementById('indexBtn');
 
         function addMessage(content, isUser = false) {
             const messageDiv = document.createElement('div');
@@ -295,20 +331,28 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         }
 
         function sendQuery() {
-            const query = queryInput.value.trim();
+            const query = (input && input.value ? input.value : '').trim();
             if (query) {
                 addMessage(query, true);
-                vscode.postMessage({ type: 'query', query });
-                queryInput.value = '';
+                vscode.postMessage({ type: 'sendMessage', text: query });
+                if (input) input.value = '';
             }
         }
 
         sendButton.addEventListener('click', sendQuery);
-        queryInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendQuery();
-            }
-        });
+        if (indexBtn) {
+            indexBtn.addEventListener('click', () => {
+                vscode.postMessage({ type: 'indexCurrent' });
+            });
+        }
+        if (input) {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendQuery();
+                }
+            });
+        }
 
         window.addEventListener('message', event => {
             const message = event.data;
