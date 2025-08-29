@@ -1,0 +1,110 @@
+name: Deploy Backend to Azure Container Apps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'server/**'
+      - '.github/workflows/azure-backend.yml'
+
+env:
+  IMAGE_NAME: reflyx-backend
+  DOCKERFILE_PATH: server/Dockerfile
+  CONTEXT_PATH: server
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Azure CLI - ACR Login
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            set -e
+            az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Build and Push image
+        run: |
+          set -e
+          IMAGE_TAG=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker build -f $DOCKERFILE_PATH -t $IMAGE_TAG $CONTEXT_PATH
+          docker push $IMAGE_TAG
+        shell: bash
+
+      - name: Deploy to Azure Container Apps
+        uses: azure/cli@v2
+        env:
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_REGION: ${{ secrets.AZURE_REGION }}
+          CONTAINERAPPS_ENV: ${{ secrets.CONTAINERAPPS_ENV }}
+          CONTAINERAPPS_NAME: ${{ secrets.CONTAINERAPPS_NAME }}
+          ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+          QDRANT_URL: ${{ secrets.QDRANT_URL }}
+          REDIS_URL: ${{ secrets.REDIS_URL }}
+          OLLAMA_URL: ${{ secrets.OLLAMA_URL }}
+          EMBEDDING_MODEL: ${{ secrets.EMBEDDING_MODEL }}
+          CORS_ORIGINS: ${{ secrets.CORS_ORIGINS }}
+          LOG_LEVEL: ${{ secrets.LOG_LEVEL }}
+          WORKERS: ${{ secrets.WORKERS }}
+        with:
+          inlineScript: |
+            set -e
+            IMAGE_TAG=${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+            # Ensure env exists
+            az containerapp env show \
+              --name "$CONTAINERAPPS_ENV" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              >/dev/null 2>&1 || \
+            az containerapp env create \
+              --name "$CONTAINERAPPS_ENV" \
+              --resource-group "$AZURE_RESOURCE_GROUP" \
+              --location "$AZURE_REGION"
+
+            # Create or update the app
+            if az containerapp show --name "$CONTAINERAPPS_NAME" --resource-group "$AZURE_RESOURCE_GROUP" >/dev/null 2>&1; then
+              az containerapp update \
+                --name "$CONTAINERAPPS_NAME" \
+                --resource-group "$AZURE_RESOURCE_GROUP" \
+                --image "$IMAGE_TAG" \
+                --ingress external --target-port 8000 \
+                --registry-server "$ACR_LOGIN_SERVER" \
+                --set-env-vars \
+                  QDRANT_URL="$QDRANT_URL" \
+                  REDIS_URL="$REDIS_URL" \
+                  OLLAMA_URL="$OLLAMA_URL" \
+                  EMBEDDING_MODEL="$EMBEDDING_MODEL" \
+                  CORS_ORIGINS="$CORS_ORIGINS" \
+                  LOG_LEVEL="${LOG_LEVEL:-INFO}" \
+                  WORKERS="${WORKERS:-2}"
+            else
+              az containerapp create \
+                --name "$CONTAINERAPPS_NAME" \
+                --resource-group "$AZURE_RESOURCE_GROUP" \
+                --environment "$CONTAINERAPPS_ENV" \
+                --image "$IMAGE_TAG" \
+                --ingress external --target-port 8000 \
+                --registry-server "$ACR_LOGIN_SERVER" \
+                --set-env-vars \
+                  QDRANT_URL="$QDRANT_URL" \
+                  REDIS_URL="$REDIS_URL" \
+                  OLLAMA_URL="$OLLAMA_URL" \
+                  EMBEDDING_MODEL="$EMBEDDING_MODEL" \
+                  CORS_ORIGINS="$CORS_ORIGINS" \
+                  LOG_LEVEL="${LOG_LEVEL:-INFO}" \
+                  WORKERS="${WORKERS:-2}"
+            fi
+
+            # Output URL
+            FQDN=$(az containerapp show --name "$CONTAINERAPPS_NAME" --resource-group "$AZURE_RESOURCE_GROUP" --query properties.configuration.ingress.fqdn -o tsv)
+            echo "Backend URL: https://$FQDN"
+
