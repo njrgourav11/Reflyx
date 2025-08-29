@@ -27,24 +27,38 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         context: vscode.WebviewViewResolveContext,
         token: vscode.CancellationToken
     ) {
-        this.view = webviewView;
+        try {
+            this.view = webviewView;
 
-        webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [
-                this.context.extensionUri
-            ]
-        };
+            webviewView.webview.options = {
+                enableScripts: true,
+                localResourceRoots: [ this.context.extensionUri ]
+            };
 
-        webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
+            // Defensive: never throw out of resolve. If HTML generation fails, show a basic fallback.
+            try {
+                webviewView.webview.html = this.getHtmlForWebview(webviewView.webview);
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : 'Unknown error';
+                webviewView.webview.html = `<html><body style="padding:12px;font-family:var(--vscode-font-family)"><h3>Reflyx</h3><p>Failed to load chat view.</p><pre>${msg}</pre></body></html>`;
+            }
 
-        webviewView.webview.onDidReceiveMessage(
-            async (data) => {
-                await this.handleMessage(data);
-            },
-            undefined,
-            this.context.subscriptions
-        );
+            webviewView.webview.onDidReceiveMessage(
+                async (data) => {
+                    try {
+                        await this.handleMessage(data);
+                    } catch (err) {
+                        this.logger.error('Message handler error', err);
+                        this.sendMessage({ type: 'error', message: 'Unexpected error in chat view' });
+                    }
+                },
+                undefined,
+                this.context.subscriptions
+            );
+        } catch (err) {
+            // Never propagate errors to VS Code; this prevents the "no data provider" message
+            this.logger.error('resolveWebviewView error', err);
+        }
     }
 
     private async handleMessage(data: any) {
@@ -59,6 +73,9 @@ export class ChatProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'generate':
                     await this.handleGenerateCode(data.prompt, data.language);
+                    break;
+                case 'streamGenerate':
+                    await this.handleStreamGenerate(data.prompt, data.language);
                     break;
                 case 'indexCurrent': {
                     const editor = vscode.window.activeTextEditor;
@@ -96,18 +113,20 @@ export class ChatProvider implements vscode.WebviewViewProvider {
 
     public async handleQuery(query: string) {
         try {
-            this.sendMessage({ type: 'thinking', message: 'Searching codebase...' });
-            
-            const response = await this.apiClient.query({
-                query,
-                max_results: 10
-            });
+            this.sendMessage({ type: 'thinking', message: 'Searching codebase (streaming)...' });
 
-            this.sendMessage({
-                type: 'response',
-                message: response.response,
-                results: response.results
-            });
+            // Kick off streaming feedback while also calling the standard API
+            const events: string[] = [];
+            this.apiClient.streamQuery((evt) => {
+                if (evt.type === 'token') {
+                    events.push(evt.data?.text || '');
+                    this.sendMessage({ type: 'partial', message: events.join(' ') });
+                }
+            }).catch(() => {});
+
+            const response = await this.apiClient.query({ query, max_results: 10 });
+
+            this.sendMessage({ type: 'response', message: response.response, results: response.results });
         } catch (error) {
             this.logger.error('Error handling query:', error);
             this.sendMessage({
@@ -143,23 +162,29 @@ export class ChatProvider implements vscode.WebviewViewProvider {
     public async handleGenerateCode(prompt: string, language: string) {
         try {
             this.sendMessage({ type: 'thinking', message: 'Generating code...' });
-            
-            const response = await this.apiClient.generateCode({
-                prompt,
-                language
-            });
 
-            this.sendMessage({
-                type: 'code',
-                code: response.generated_code,
-                language
-            });
+            const response = await this.apiClient.generateCode({ prompt, language });
+            this.sendMessage({ type: 'code', code: response.generated_code, language });
         } catch (error) {
             this.logger.error('Error generating code:', error);
-            this.sendMessage({
-                type: 'error',
-                message: 'Failed to generate code'
+            this.sendMessage({ type: 'error', message: 'Failed to generate code' });
+        }
+    }
+
+    public async handleStreamGenerate(prompt: string, language: string) {
+        try {
+            this.sendMessage({ type: 'thinking', message: 'Generating code (streaming)...' });
+
+            let full = '';
+            await this.apiClient.streamGenerate((evt) => {
+                if (evt.type === 'token') {
+                    full += (evt.data?.text || '') + '\n';
+                    this.sendMessage({ type: 'code', code: full, language });
+                }
             });
+        } catch (error) {
+            this.logger.error('Error streaming code generation:', error);
+            this.sendMessage({ type: 'error', message: 'Failed to stream code generation' });
         }
     }
 
@@ -312,6 +337,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
             <textarea id="input" class="input-field" placeholder="Ask about your codebase…" style="min-height:44px;max-height:140px;resize:none;"></textarea>
             <button id="indexBtn" class="send-button" title="Index current file">Index</button>
             <button id="sendButton" class="send-button">Send</button>
+            <button id="genStreamBtn" class="send-button" title="Stream Generate">Stream Gen</button>
         </div>
     </div>
 
@@ -321,6 +347,7 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         const input = document.getElementById('input');
         const sendButton = document.getElementById('sendButton');
         const indexBtn = document.getElementById('indexBtn');
+        const genStreamBtn = document.getElementById('genStreamBtn');
 
         function addMessage(content, isUser = false) {
             const messageDiv = document.createElement('div');
@@ -343,6 +370,14 @@ export class ChatProvider implements vscode.WebviewViewProvider {
         if (indexBtn) {
             indexBtn.addEventListener('click', () => {
                 vscode.postMessage({ type: 'indexCurrent' });
+            });
+        }
+        if (genStreamBtn) {
+            genStreamBtn.addEventListener('click', () => {
+                const prompt = (input && input.value ? input.value : '').trim();
+                if (prompt) {
+                    vscode.postMessage({ type: 'streamGenerate', prompt, language: 'typescript' });
+                }
             });
         }
         if (input) {

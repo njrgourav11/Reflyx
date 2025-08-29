@@ -220,6 +220,70 @@ export class ApiClient {
     }
 
     /**
+     * Stream query updates via SSE
+     */
+    async streamQuery(onEvent: (evt: { type: string; data: any }) => void): Promise<void> {
+        try {
+            const url = this.client.defaults.baseURL?.replace(/\/$/, '') + '/api/v1/query/stream';
+            const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'text/event-stream' } });
+            const reader = (res.body as any).getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) >= 0) {
+                    const raw = buffer.slice(0, idx).trim();
+                    buffer = buffer.slice(idx + 2);
+                    const lines = raw.split('\n');
+                    const eventLine = lines.find(l => l.startsWith('event:')) || '';
+                    const dataLine = lines.find(l => l.startsWith('data:')) || '';
+                    const type = eventLine.replace('event:', '').trim() || 'message';
+                    const data = dataLine ? JSON.parse(dataLine.replace('data:', '').trim()) : null;
+                    onEvent({ type, data });
+                }
+            }
+        } catch (err) {
+            this.logger.error('SSE stream error', err);
+            throw err;
+        }
+    }
+
+    /**
+     * Stream code generation via SSE
+     */
+    async streamGenerate(onEvent: (evt: { type: string; data: any }) => void): Promise<void> {
+        try {
+            const url = this.client.defaults.baseURL?.replace(/\/$/, '') + '/api/v1/generate/stream';
+            const res = await fetch(url, { method: 'GET', headers: { 'Accept': 'text/event-stream' } });
+            const reader = (res.body as any).getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+                let idx;
+                while ((idx = buffer.indexOf('\n\n')) >= 0) {
+                    const raw = buffer.slice(0, idx).trim();
+                    buffer = buffer.slice(idx + 2);
+                    const lines = raw.split('\n');
+                    const eventLine = lines.find(l => l.startsWith('event:')) || '';
+                    const dataLine = lines.find(l => l.startsWith('data:')) || '';
+                    const type = eventLine.replace('event:', '').trim() || 'message';
+                    const data = dataLine ? JSON.parse(dataLine.replace('data:', '').trim()) : null;
+                    onEvent({ type, data });
+                }
+            }
+        } catch (err) {
+            this.logger.error('SSE stream error', err);
+            throw err;
+        }
+    }
+
+    /**
      * Index a single file
      */
     async indexFile(request: { file_path: string; content: string; language: string }): Promise<void> {

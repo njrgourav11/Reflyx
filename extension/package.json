@@ -2,7 +2,7 @@
   "name": "reflyx",
   "displayName": "Reflyx",
   "description": "Local AI-powered coding assistant with semantic search and code generation",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "publisher": "GouravB",
   "engines": {
     "vscode": "^1.74.0"
@@ -161,7 +161,7 @@
     "viewsWelcome": [
       {
         "view": "aiCodingAssistant.chatView",
-        "when": "aiCodingAssistant.indexed != true",
+        "when": "false",
         "contents": "Welcome to Reflyx!\n\n[Index Workspace](command:aiCodingAssistant.indexWorkspace)\n\nStart by indexing your workspace to enable semantic search and AI assistance."
       }
     ],

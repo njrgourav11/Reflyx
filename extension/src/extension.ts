@@ -93,18 +93,18 @@ export async function activate(context: vscode.ExtensionContext) {
         // Register commands
         registerCommands(context);
 
-        // Register chat view
-        context.subscriptions.push(
-            vscode.window.registerWebviewViewProvider(
+        // Register chat view early to ensure data provider exists
+        // Defensive: wrap registration to avoid throwing during activation
+        try {
+            const chatViewDisposable = vscode.window.registerWebviewViewProvider(
                 'aiCodingAssistant.chatView',
                 chatProvider,
-                {
-                    webviewOptions: {
-                        retainContextWhenHidden: true
-                    }
-                }
-            )
-        );
+                { webviewOptions: { retainContextWhenHidden: true } }
+            );
+            context.subscriptions.push(chatViewDisposable);
+        } catch (e) {
+            logger.error('Failed to register chat view provider', e);
+        }
 
         // Update health indicator on focus
         context.subscriptions.push(
@@ -143,6 +143,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	            const indexed = !!lastIndex && lastIndex > 0;
 	            await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', indexed);
 	        } catch {}
+
+            // Allow chatting even if not indexed
+            try {
+                await vscode.commands.executeCommand('setContext', 'aiCodingAssistant.indexed', true);
+            } catch {}
+
 
 
         // Update status bar with current AI mode
