@@ -1,5 +1,4 @@
 # Azure DevOps Pipeline: Build and Deploy to Azure Container Apps
-
 trigger:
 - master
 
@@ -7,14 +6,15 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  IMAGE_NAME: 'my-app'                   # <-- Change to your image name
-  DOCKERFILE_PATH: 'Dockerfile'          # <-- Change if needed
-  CONTEXT_PATH: '.'                      # <-- Change if needed
-  TAG: '$(Build.BuildId)'                # Automatically generated build ID
+  IMAGE_NAME: 'Reflyx'
+  DOCKERFILE_PATH: 'Dockerfile'
+  CONTEXT_PATH: '.'
+  TAG: '$(Build.BuildId)'
 
 steps:
-- task: Checkout@v3
+- checkout: self
   displayName: 'Checkout code'
+
 
 # Azure CLI login using service principal
 - task: AzureCLI@2
