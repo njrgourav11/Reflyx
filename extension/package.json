@@ -2,7 +2,7 @@
   "name": "reflyx",
   "displayName": "Reflyx",
   "description": "Local AI-powered coding assistant with semantic search and code generation",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "GouravB",
   "engines": {
     "vscode": "^1.74.0"
