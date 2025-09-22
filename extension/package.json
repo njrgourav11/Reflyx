@@ -154,7 +154,8 @@
       "aiCodingAssistantContainer": [
         {
           "id": "aiCodingAssistant.chatView",
-          "name": "Chat"
+          "name": "Chat",
+          "type": "webview"
         }
       ]
     },
